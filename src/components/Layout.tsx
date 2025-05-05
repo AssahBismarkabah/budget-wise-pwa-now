@@ -17,6 +17,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import Logo from './Logo';
 
 interface LayoutProps {
   children: ReactNode;
@@ -33,7 +34,7 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-medium mb-2">{t('loading')}</h2>
-          <p className="text-muted-foreground">My Budget</p>
+          <Logo size="large" />
         </div>
       </div>
     );
@@ -51,14 +52,14 @@ const Layout = ({ children }: LayoutProps) => {
         >
           <Menu />
         </Button>
-        <h1 className="text-lg font-medium">My Budget</h1>
+        <Logo showText={true} size="small" />
         <div className="w-8"></div>
       </header>
 
       {/* Sidebar */}
       <div 
         className={cn(
-          "fixed inset-0 z-20 bg-black/50 transition-opacity",
+          "fixed inset-0 z-20 bg-black/50 backdrop-blur-sm transition-opacity",
           sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={() => setSidebarOpen(false)}
@@ -66,12 +67,12 @@ const Layout = ({ children }: LayoutProps) => {
       
       <div 
         className={cn(
-          "fixed left-0 top-0 z-30 h-full w-64 bg-white shadow-xl transform transition-transform overflow-y-auto",
+          "fixed left-0 top-0 z-30 h-full w-64 bg-white shadow-xl transform transition-transform overflow-y-auto animate-slide-in",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Sidebar Header */}
-        <div className="p-4 flex items-center justify-between border-b">
+        <div className="p-4 flex items-center justify-between border-b bg-budget-blue/5">
           <h2 className="font-medium">{t('menu')}</h2>
           <Button 
             variant="ghost" 
@@ -87,7 +88,7 @@ const Layout = ({ children }: LayoutProps) => {
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('accounts')}</h3>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full flex items-center justify-start gap-2">
+              <Button variant="outline" className="w-full flex items-center justify-start gap-2 hover:bg-budget-blue/5">
                 <Avatar className="h-8 w-8 bg-budget-blue text-white">
                   <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
                 </Avatar>
@@ -125,8 +126,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-              location.pathname === '/' && "bg-gray-100 font-medium"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+              location.pathname === '/' && "bg-budget-blue/10 font-medium text-budget-blue"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -137,8 +138,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/limits" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-              location.pathname === '/limits' && "bg-gray-100 font-medium"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+              location.pathname === '/limits' && "bg-budget-blue/10 font-medium text-budget-blue"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -149,8 +150,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/savings-goals" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-              location.pathname === '/savings-goals' && "bg-gray-100 font-medium"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+              location.pathname === '/savings-goals' && "bg-budget-blue/10 font-medium text-budget-blue"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -161,8 +162,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/statistics" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-              location.pathname === '/statistics' && "bg-gray-100 font-medium"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+              location.pathname === '/statistics' && "bg-budget-blue/10 font-medium text-budget-blue"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -178,8 +179,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/categories/income" 
               className={cn(
-                "block p-2 rounded-md hover:bg-gray-100 transition-colors",
-                location.pathname === '/categories/income' && "bg-gray-100 font-medium"
+                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+                location.pathname === '/categories/income' && "bg-budget-blue/10 font-medium text-budget-blue"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -188,8 +189,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/categories/expense" 
               className={cn(
-                "block p-2 rounded-md hover:bg-gray-100 transition-colors",
-                location.pathname === '/categories/expense' && "bg-gray-100 font-medium"
+                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+                location.pathname === '/categories/expense' && "bg-budget-blue/10 font-medium text-budget-blue"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -205,8 +206,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/templates" 
               className={cn(
-                "block p-2 rounded-md hover:bg-gray-100 transition-colors",
-                location.pathname === '/templates' && "bg-gray-100 font-medium"
+                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+                location.pathname === '/templates' && "bg-budget-blue/10 font-medium text-budget-blue"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -215,8 +216,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/recurring" 
               className={cn(
-                "block p-2 rounded-md hover:bg-gray-100 transition-colors",
-                location.pathname === '/recurring' && "bg-gray-100 font-medium"
+                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+                location.pathname === '/recurring' && "bg-budget-blue/10 font-medium text-budget-blue"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -232,8 +233,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/settings" 
               className={cn(
-                "flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors",
-                location.pathname === '/settings' && "bg-gray-100 font-medium"
+                "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
+                location.pathname === '/settings' && "bg-budget-blue/10 font-medium text-budget-blue"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -250,7 +251,7 @@ const Layout = ({ children }: LayoutProps) => {
       </div>
 
       {/* Main Content */}
-      <main className="pb-20">
+      <main className="pb-20 animate-fade-in">
         {children}
       </main>
 
@@ -259,7 +260,7 @@ const Layout = ({ children }: LayoutProps) => {
         <Link 
           to="/" 
           className={cn(
-            "flex flex-col items-center p-2",
+            "flex flex-col items-center p-2 transition-colors",
             location.pathname === '/' ? "text-budget-blue" : "text-gray-500"
           )}
         >
@@ -270,7 +271,7 @@ const Layout = ({ children }: LayoutProps) => {
         <Link 
           to="/limits" 
           className={cn(
-            "flex flex-col items-center p-2",
+            "flex flex-col items-center p-2 transition-colors",
             location.pathname === '/limits' ? "text-budget-blue" : "text-gray-500"
           )}
         >
@@ -281,7 +282,7 @@ const Layout = ({ children }: LayoutProps) => {
         <Link 
           to="/savings-goals" 
           className={cn(
-            "flex flex-col items-center p-2",
+            "flex flex-col items-center p-2 transition-colors",
             location.pathname === '/savings-goals' ? "text-budget-blue" : "text-gray-500"
           )}
         >
@@ -292,7 +293,7 @@ const Layout = ({ children }: LayoutProps) => {
         <Link 
           to="/statistics" 
           className={cn(
-            "flex flex-col items-center p-2",
+            "flex flex-col items-center p-2 transition-colors",
             location.pathname === '/statistics' ? "text-budget-blue" : "text-gray-500"
           )}
         >

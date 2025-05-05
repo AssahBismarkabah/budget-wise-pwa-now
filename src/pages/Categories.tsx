@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -21,11 +22,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { TransactionType } from '@/services/dbService';
-import { X, Plus } from 'lucide-react';
+import { X, Plus, Tag } from 'lucide-react';
 
 const Categories = () => {
   const { type } = useParams<{ type: string }>();
   const { categories, addCategory, deleteCategory } = useBudget();
+  const { t } = useLanguage();
   
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -59,38 +61,45 @@ const Categories = () => {
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">
-          {categoryType === 'income' ? 'Einnahmen' : 'Ausgaben'} Kategorien
-        </h1>
+        <div className="flex items-center mb-6">
+          <Tag className="h-6 w-6 mr-2 text-budget-blue" />
+          <h1 className="text-2xl font-bold">
+            {categoryType === 'income' ? t('income_categories') : t('expense_categories')}
+          </h1>
+        </div>
         
         {/* Categories List */}
-        <div className="bg-white rounded-lg shadow-md mb-6">
+        <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
           {filteredCategories.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-muted-foreground">Keine Kategorien vorhanden</p>
+              <p className="text-muted-foreground">{t('no_categories')}</p>
               <Button 
                 onClick={() => setNewDialogOpen(true)}
                 className="mt-4"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Kategorie hinzufügen
+                {t('add_category')}
               </Button>
             </div>
           ) : (
             <>
-              <div className="p-4 border-b">
-                <h3 className="font-medium">Alle Kategorien</h3>
+              <div className="p-4 border-b bg-gradient-to-r from-budget-blue/10 to-transparent">
+                <h3 className="font-medium">{t('all_categories')}</h3>
               </div>
               
               <ul className="divide-y">
                 {filteredCategories.map((category) => (
-                  <li key={category.id} className="flex items-center justify-between p-4">
-                    <span>{category.name}</span>
+                  <li key={category.id} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center">
+                      <div className={`w-3 h-3 rounded-full mr-3 ${categoryType === 'income' ? 'bg-budget-green' : 'bg-budget-red'}`}></div>
+                      <span>{category.name}</span>
+                    </div>
                     {!category.isDefault && (
                       <Button 
                         variant="ghost" 
                         size="icon"
                         onClick={() => setDeleteId(category.id)}
+                        className="text-gray-500 hover:text-budget-red hover:bg-budget-red/10"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -109,7 +118,7 @@ const Categories = () => {
               setCategoryName('');
               setNewDialogOpen(true);
             }}
-            className="rounded-full h-12 w-12 bg-budget-blue hover:bg-budget-blue/90 shadow-md"
+            className="rounded-full h-12 w-12 bg-budget-blue hover:bg-budget-blue/90 shadow-md hover:shadow-lg transition-all"
           >
             <Plus className="h-6 w-6" />
           </Button>
@@ -117,21 +126,22 @@ const Categories = () => {
         
         {/* Add Category Dialog */}
         <Dialog open={newDialogOpen} onOpenChange={setNewDialogOpen}>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[425px]">
             <h3 className="text-lg font-medium mb-4">
-              Neue {categoryType === 'income' ? 'Einnahmen' : 'Ausgaben'}kategorie
+              {categoryType === 'income' ? t('new_income') : t('new_expense')} {t('category')}
             </h3>
             
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name
+                  {t('category')}
                 </label>
                 <Input
                   id="name"
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
-                  placeholder="Kategoriename"
+                  placeholder={t('category')}
+                  className="w-full"
                 />
               </div>
               
@@ -141,13 +151,13 @@ const Categories = () => {
                   variant="outline" 
                   onClick={() => setNewDialogOpen(false)}
                 >
-                  Abbrechen
+                  {t('cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleAddCategory}
                 >
-                  Hinzufügen
+                  {t('add_category')}
                 </Button>
               </div>
             </div>
@@ -158,15 +168,14 @@ const Categories = () => {
         <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Kategorie löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('delete')} {t('category')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie diese Kategorie löschen möchten? 
-                Transaktionen mit dieser Kategorie bleiben bestehen.
+                {t('delete_confirmation')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Löschen</AlertDialogAction>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm}>{t('delete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
