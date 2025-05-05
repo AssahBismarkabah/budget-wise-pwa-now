@@ -1,5 +1,4 @@
-
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
@@ -9,7 +8,9 @@ import {
   BarChart,
   Target,
   PieChart,
-  Settings
+  Settings,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBudget } from '@/contexts/BudgetContext';
@@ -17,6 +18,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import Logo from './Logo';
 
 interface LayoutProps {
@@ -25,9 +27,36 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
   const { currentAccount, accounts, switchAccount, isLoading } = useBudget();
   const { t } = useLanguage();
+  
+  // Apply dark mode class to html element
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  // Initialize dark mode from localStorage if available
+  useEffect(() => {
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode) {
+      setIsDarkMode(JSON.parse(savedDarkMode));
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  // Toggle dark mode and save to localStorage
+  const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode;
+    setIsDarkMode(newDarkMode);
+    localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
+  };
   
   if (isLoading) {
     return (
@@ -41,19 +70,43 @@ const Layout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <header className="bg-budget-blue text-white p-4 flex items-center justify-between sticky top-0 z-10 shadow-md">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={() => setSidebarOpen(true)}
-          className="text-white hover:bg-budget-blue/80"
-        >
-          <Menu />
-        </Button>
-        <Logo showText={true} size="small" />
-        <div className="w-8"></div>
+      <header className="bg-white dark:bg-gray-800 text-budget-blue dark:text-white border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm transition-colors duration-300">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setSidebarOpen(true)}
+                className="text-budget-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 mr-2"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <Logo showText={true} size="small" />
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleDarkMode}
+                className="text-budget-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                title={isDarkMode ? t('light_mode') : t('dark_mode')}
+              >
+                {isDarkMode ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
+              <Avatar className="h-8 w-8 bg-budget-blue text-white">
+                <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+        </div>
       </header>
 
       {/* Sidebar */}
@@ -67,37 +120,50 @@ const Layout = ({ children }: LayoutProps) => {
       
       <div 
         className={cn(
-          "fixed left-0 top-0 z-30 h-full w-64 bg-white shadow-xl transform transition-transform overflow-y-auto animate-slide-in",
+          "fixed left-0 top-0 z-30 h-full w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform overflow-y-auto animate-slide-in",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Sidebar Header */}
-        <div className="p-4 flex items-center justify-between border-b bg-budget-blue/5">
-          <h2 className="font-medium">{t('menu')}</h2>
+        <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+          <Logo showText={true} size="small" />
           <Button 
             variant="ghost" 
             size="icon"
             onClick={() => setSidebarOpen(false)}
+            className="dark:text-white"
           >
             <X className="h-5 w-5" />
           </Button>
         </div>
 
+        {/* Dark Mode Toggle in Sidebar */}
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium dark:text-white">{isDarkMode ? t('dark_mode') : t('light_mode')}</span>
+            <Switch 
+              checked={isDarkMode} 
+              onCheckedChange={toggleDarkMode} 
+              aria-label="Toggle dark mode"
+            />
+          </div>
+        </div>
+        
         {/* Account Section */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('accounts')}</h3>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full flex items-center justify-start gap-2 hover:bg-budget-blue/5">
+              <Button variant="outline" className="w-full flex items-center justify-start gap-2 hover:bg-budget-blue/5 dark:text-white dark:hover:bg-gray-700">
                 <Avatar className="h-8 w-8 bg-budget-blue text-white">
                   <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
                 </Avatar>
                 <span className="font-medium">{currentAccount?.name || 'Mein Konto'}</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="p-0">
+            <DialogContent className="p-0 dark:bg-gray-800">
               <div className="p-4">
-                <h3 className="font-medium mb-4">{t('accounts')}</h3>
+                <h3 className="font-medium mb-4 dark:text-white">{t('accounts')}</h3>
                 <div className="space-y-2">
                   {accounts.map(account => (
                     <Button
@@ -122,7 +188,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Main Navigation */}
-        <div className="p-4 space-y-2 border-b">
+        <div className="p-4 space-y-2 border-b border-gray-200 dark:border-gray-700">
           <Link 
             to="/" 
             className={cn(
@@ -173,7 +239,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Categories */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('categories')}</h3>
           <div className="space-y-2">
             <Link 
@@ -200,7 +266,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Tools */}
-        <div className="p-4 border-b">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('tools')}</h3>
           <div className="space-y-2">
             <Link 
@@ -256,7 +322,7 @@ const Layout = ({ children }: LayoutProps) => {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex justify-around py-2 z-10">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex justify-around py-2 z-10 transition-colors duration-300">
         <Link 
           to="/" 
           className={cn(

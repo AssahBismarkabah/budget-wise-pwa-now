@@ -12,14 +12,28 @@ body {
   color: #333333;
 }
 
+.dark body {
+  background-color: #121212;
+  color: #f5f5f5;
+}
+
 /* Card styles */
 .card-shadow {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.dark .card-shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .card-shadow:hover {
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.dark .card-shadow:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
 }
 
 /* Custom animations */
@@ -99,6 +113,10 @@ body {
   color: #1E90FF;
 }
 
+.dark .logo-text {
+  color: #60A5FA;
+}
+
 /* Custom scroll bar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -108,6 +126,10 @@ body {
   background: #f1f1f1;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #2D3748;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #1E90FF;
   border-radius: 4px;
@@ -115,4 +137,46 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #0b6fce;
+}
+
+/* Dark mode card styles */
+.dark .card-content {
+  background-color: #2D3748;
+  color: #F7FAFC;
+}
+
+/* Header styles */
+.app-header {
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.dark .app-header {
+  background: #1A202C;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode form elements */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #2D3748;
+  color: #F7FAFC;
+  border-color: #4A5568;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #A0AEC0;
+}
+
+/* Dark mode for buttons */
+.dark .primary-button {
+  background-color: #3182CE;
+}
+
+.dark .secondary-button {
+  border-color: #4A5568;
+  color: #E2E8F0;
 }

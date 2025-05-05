@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // Define available languages
@@ -96,7 +95,10 @@ const translations: Record<Language, Record<string, string>> = {
     'limit_name': 'Limitname',
     'no_categories': 'Keine Kategorien vorhanden',
     'add_category': 'Kategorie hinzufügen',
-    'all_categories': 'Alle Kategorien'
+    'all_categories': 'Alle Kategorien',
+    'dark_mode': "Dunkelmodus",
+    'light_mode': "Hellmodus",
+    'tagline': "Ausgaben unter Kontrolle"
   },
   en: {
     // Navigation
@@ -178,7 +180,10 @@ const translations: Record<Language, Record<string, string>> = {
     'limit_name': 'Limit Name',
     'no_categories': 'No categories available',
     'add_category': 'Add Category',
-    'all_categories': 'All Categories'
+    'all_categories': 'All Categories',
+    'dark_mode': "Dark Mode",
+    'light_mode': "Light Mode",
+    'tagline': "Expenses under control"
   }
 };
 
