@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Globe } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,9 +20,16 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Settings = () => {
   const { resetApp, addAccount } = useBudget();
+  const { language, setLanguage, t } = useLanguage();
   
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newAccountOpen, setNewAccountOpen] = useState(false);
@@ -39,8 +48,8 @@ const Settings = () => {
   const handleAddAccount = async () => {
     if (!accountName.trim()) {
       toast({
-        title: 'Fehler',
-        description: 'Bitte geben Sie einen Namen für das Konto ein.',
+        title: t('error'),
+        description: t('please_enter'),
         variant: 'destructive',
       });
       return;
@@ -57,29 +66,52 @@ const Settings = () => {
   
   const handleFeedbackSubmit = () => {
     toast({
-      title: 'Feedback gesendet',
-      description: 'Vielen Dank für Ihr Feedback!',
+      title: t('feedback_sent'),
+      description: t('feedback_sent'),
     });
   };
   
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Einstellungen</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
         
         {/* Account Management */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 className="text-lg font-medium mb-4">Konten</h2>
-          <Button onClick={() => setNewAccountOpen(true)}>Neues Konto</Button>
+          <h2 className="text-lg font-medium mb-4">{t('accounts')}</h2>
+          <Button onClick={() => setNewAccountOpen(true)}>{t('new_account')}</Button>
         </div>
         
         {/* App Settings */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 className="text-lg font-medium mb-4">App-Einstellungen</h2>
+          <h2 className="text-lg font-medium mb-4">{t('app_settings')}</h2>
+          
+          {/* Language Selector */}
+          <div className="flex items-center justify-between py-2 border-b">
+            <div className="flex items-center">
+              <Globe className="h-5 w-5 mr-2" />
+              <Label className="text-base">{t('language')}</Label>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  {language === 'de' ? t('german') : t('english')}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setLanguage('de')}>
+                  {t('german')}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setLanguage('en')}>
+                  {t('english')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           
           {/* Offline Mode */}
-          <div className="flex items-center justify-between py-2">
-            <Label htmlFor="offline-mode" className="text-base">Offline Modus</Label>
+          <div className="flex items-center justify-between py-2 border-b">
+            <Label htmlFor="offline-mode" className="text-base">{t('offline_mode')}</Label>
             <Switch 
               id="offline-mode" 
               checked={offlineMode} 
@@ -93,45 +125,45 @@ const Settings = () => {
               variant="destructive" 
               onClick={() => setResetDialogOpen(true)}
             >
-              App zurücksetzen
+              {t('reset_app')}
             </Button>
             <p className="text-sm text-muted-foreground mt-2">
-              Diese Aktion löscht alle Ihre Daten und setzt die App zurück. Dies kann nicht rückgängig gemacht werden.
+              {t('reset_warning')}
             </p>
           </div>
         </div>
         
         {/* Feedback Section */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 className="text-lg font-medium mb-4">Feedback</h2>
+          <h2 className="text-lg font-medium mb-4">{t('feedback')}</h2>
           <div className="space-y-4">
             <p className="text-sm">
-              Wir freuen uns über Ihr Feedback! Helfen Sie uns, die App zu verbessern.
+              {t('feedback_desc')}
             </p>
             <textarea 
               className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue"
-              placeholder="Ihr Feedback..."
+              placeholder={t('your_feedback')}
             />
-            <Button onClick={handleFeedbackSubmit}>Feedback senden</Button>
+            <Button onClick={handleFeedbackSubmit}>{t('send_feedback')}</Button>
           </div>
         </div>
         
         {/* About Section */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-          <h2 className="text-lg font-medium mb-4">Über uns</h2>
+          <h2 className="text-lg font-medium mb-4">{t('about')}</h2>
           <div className="space-y-2">
             <p>
-              <span className="font-medium">My Budget - Expenses under control</span> wird von Deutschland im Plus entwickelt.
+              <span className="font-medium">{t('app_by')}</span>
             </p>
             <p className="text-sm text-muted-foreground">
-              Version 1.0.0
+              {t('version')}
             </p>
             <div className="pt-4 flex flex-col gap-2">
               <Button variant="outline" asChild>
-                <a href="#">Impressum</a>
+                <a href="#">{t('imprint')}</a>
               </Button>
               <Button variant="outline" asChild>
-                <a href="#">Datenschutz</a>
+                <a href="#">{t('privacy')}</a>
               </Button>
             </div>
           </div>
@@ -141,19 +173,18 @@ const Settings = () => {
         <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>App zurücksetzen</AlertDialogTitle>
+              <AlertDialogTitle>{t('reset_app')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Diese Aktion löscht alle Ihre Daten und setzt die App auf die Werkseinstellungen zurück. 
-                Dies kann nicht rückgängig gemacht werden.
+                {t('reset_warning')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
               <AlertDialogAction 
                 onClick={handleResetConfirm}
                 className="bg-budget-red hover:bg-budget-red/90"
               >
-                Zurücksetzen
+                {t('reset')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -162,17 +193,17 @@ const Settings = () => {
         {/* New Account Dialog */}
         <Dialog open={newAccountOpen} onOpenChange={setNewAccountOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">Neues Konto</h3>
+            <h3 className="text-lg font-medium mb-4">{t('new_account')}</h3>
             <div className="space-y-4">
               <div>
                 <label htmlFor="accountName" className="block text-sm font-medium mb-1">
-                  Kontoname
+                  {t('account_name')}
                 </label>
                 <Input
                   id="accountName"
                   value={accountName}
                   onChange={(e) => setAccountName(e.target.value)}
-                  placeholder="z.B. Privatkonto, Gemeinschaftskonto, etc."
+                  placeholder={t('account_placeholder')}
                 />
               </div>
               <div className="flex justify-between pt-4">
@@ -181,13 +212,13 @@ const Settings = () => {
                   variant="outline" 
                   onClick={() => setNewAccountOpen(false)}
                 >
-                  Abbrechen
+                  {t('cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleAddAccount}
                 >
-                  Erstellen
+                  {t('create')}
                 </Button>
               </div>
             </div>

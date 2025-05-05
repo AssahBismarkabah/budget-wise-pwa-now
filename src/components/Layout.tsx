@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBudget } from '@/contexts/BudgetContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
@@ -25,13 +26,14 @@ const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const { currentAccount, accounts, switchAccount, isLoading } = useBudget();
+  const { t } = useLanguage();
   
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-medium mb-2">Lädt...</h2>
-          <p className="text-muted-foreground">My Budget wird geladen</p>
+          <h2 className="text-xl font-medium mb-2">{t('loading')}</h2>
+          <p className="text-muted-foreground">My Budget</p>
         </div>
       </div>
     );
@@ -70,7 +72,7 @@ const Layout = ({ children }: LayoutProps) => {
       >
         {/* Sidebar Header */}
         <div className="p-4 flex items-center justify-between border-b">
-          <h2 className="font-medium">Menu</h2>
+          <h2 className="font-medium">{t('menu')}</h2>
           <Button 
             variant="ghost" 
             size="icon"
@@ -82,7 +84,7 @@ const Layout = ({ children }: LayoutProps) => {
 
         {/* Account Section */}
         <div className="p-4 border-b">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Konto</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('accounts')}</h3>
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" className="w-full flex items-center justify-start gap-2">
@@ -94,7 +96,7 @@ const Layout = ({ children }: LayoutProps) => {
             </DialogTrigger>
             <DialogContent className="p-0">
               <div className="p-4">
-                <h3 className="font-medium mb-4">Konten</h3>
+                <h3 className="font-medium mb-4">{t('accounts')}</h3>
                 <div className="space-y-2">
                   {accounts.map(account => (
                     <Button
@@ -129,7 +131,7 @@ const Layout = ({ children }: LayoutProps) => {
             onClick={() => setSidebarOpen(false)}
           >
             <Home className="h-5 w-5" />
-            <span>Übersicht</span>
+            <span>{t('overview')}</span>
           </Link>
           
           <Link 
@@ -141,7 +143,7 @@ const Layout = ({ children }: LayoutProps) => {
             onClick={() => setSidebarOpen(false)}
           >
             <BarChart className="h-5 w-5" />
-            <span>Limits</span>
+            <span>{t('limits')}</span>
           </Link>
           
           <Link 
@@ -153,7 +155,7 @@ const Layout = ({ children }: LayoutProps) => {
             onClick={() => setSidebarOpen(false)}
           >
             <Target className="h-5 w-5" />
-            <span>Sparziele</span>
+            <span>{t('savings_goals')}</span>
           </Link>
           
           <Link 
@@ -165,13 +167,13 @@ const Layout = ({ children }: LayoutProps) => {
             onClick={() => setSidebarOpen(false)}
           >
             <PieChart className="h-5 w-5" />
-            <span>Statistik</span>
+            <span>{t('statistics')}</span>
           </Link>
         </div>
 
         {/* Categories */}
         <div className="p-4 border-b">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Kategorien</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('categories')}</h3>
           <div className="space-y-2">
             <Link 
               to="/categories/income" 
@@ -181,7 +183,7 @@ const Layout = ({ children }: LayoutProps) => {
               )}
               onClick={() => setSidebarOpen(false)}
             >
-              Einnahmen Kategorien
+              {t('income_categories')}
             </Link>
             <Link 
               to="/categories/expense" 
@@ -191,14 +193,14 @@ const Layout = ({ children }: LayoutProps) => {
               )}
               onClick={() => setSidebarOpen(false)}
             >
-              Ausgaben Kategorien
+              {t('expense_categories')}
             </Link>
           </div>
         </div>
 
         {/* Tools */}
         <div className="p-4 border-b">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Tools</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('tools')}</h3>
           <div className="space-y-2">
             <Link 
               to="/templates" 
@@ -208,7 +210,7 @@ const Layout = ({ children }: LayoutProps) => {
               )}
               onClick={() => setSidebarOpen(false)}
             >
-              Vorlagen
+              {t('templates')}
             </Link>
             <Link 
               to="/recurring" 
@@ -218,14 +220,14 @@ const Layout = ({ children }: LayoutProps) => {
               )}
               onClick={() => setSidebarOpen(false)}
             >
-              Wiederkehrende Posten
+              {t('recurring_items')}
             </Link>
           </div>
         </div>
 
         {/* Settings */}
         <div className="p-4">
-          <h3 className="text-sm font-medium text-muted-foreground mb-2">Einstellungen</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('settings')}</h3>
           <div className="space-y-2">
             <Link 
               to="/settings" 
@@ -236,12 +238,12 @@ const Layout = ({ children }: LayoutProps) => {
               onClick={() => setSidebarOpen(false)}
             >
               <Settings className="h-5 w-5" />
-              <span>Einstellungen</span>
+              <span>{t('settings')}</span>
             </Link>
             <Separator className="my-2" />
             <div className="text-xs text-center text-muted-foreground pt-2">
               <p>© 2025 Deutschland im Plus</p>
-              <p className="mt-1">Version 1.0.0</p>
+              <p className="mt-1">{t('version')}</p>
             </div>
           </div>
         </div>
@@ -262,7 +264,7 @@ const Layout = ({ children }: LayoutProps) => {
           )}
         >
           <Home className="h-6 w-6" />
-          <span className="text-xs mt-1">Übersicht</span>
+          <span className="text-xs mt-1">{t('overview')}</span>
         </Link>
         
         <Link 
@@ -273,7 +275,7 @@ const Layout = ({ children }: LayoutProps) => {
           )}
         >
           <BarChart className="h-6 w-6" />
-          <span className="text-xs mt-1">Limits</span>
+          <span className="text-xs mt-1">{t('limits')}</span>
         </Link>
         
         <Link 
@@ -284,7 +286,7 @@ const Layout = ({ children }: LayoutProps) => {
           )}
         >
           <Target className="h-6 w-6" />
-          <span className="text-xs mt-1">Sparziele</span>
+          <span className="text-xs mt-1">{t('savings_goals')}</span>
         </Link>
         
         <Link 
@@ -295,7 +297,7 @@ const Layout = ({ children }: LayoutProps) => {
           )}
         >
           <PieChart className="h-6 w-6" />
-          <span className="text-xs mt-1">Statistik</span>
+          <span className="text-xs mt-1">{t('statistics')}</span>
         </Link>
       </nav>
     </div>
