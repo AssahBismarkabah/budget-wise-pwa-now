@@ -1,4 +1,3 @@
-
 import { formatCurrency } from '@/lib/formatters';
 import { useBudget } from '@/contexts/BudgetContext';
 import { Transaction } from '@/services/dbService';
@@ -18,6 +17,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import TransactionForm from './TransactionForm';
+import { useTranslation } from 'react-i18next';
 
 interface TransactionItemProps {
   transaction: Transaction;
@@ -25,22 +25,27 @@ interface TransactionItemProps {
 
 const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const { categories, deleteTransaction } = useBudget();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   
   const category = categories.find(cat => cat.id === transaction.category);
   
-  const formattedDate = new Date(transaction.date).toLocaleDateString('de-DE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  const formattedDate = new Date(transaction.date).toLocaleDateString(
+    { de: 'de-DE', en: 'en-US' }[language],
+    {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }
+  );
 
   return (
     <div className="flex items-center justify-between p-3 border-b last:border-0">
       <div className="flex-1">
         <div className="font-medium">
-          {transaction.title || category?.name || (transaction.type === 'income' ? 'Einnahme' : 'Ausgabe')}
+          {transaction.title || category?.name || (transaction.type === 'income' ? t('new_income') : t('new_expense'))}
         </div>
         <div className="text-sm text-muted-foreground flex items-center gap-2">
           <span>{formattedDate}</span>
@@ -80,18 +85,18 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
           
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Transaktion löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('delete')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie diese Transaktion löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+                {t('delete_confirmation')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
               <AlertDialogAction 
                 onClick={() => deleteTransaction(transaction.id)}
                 className="bg-budget-red hover:bg-budget-red/90"
               >
-                Löschen
+                {t('delete')}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

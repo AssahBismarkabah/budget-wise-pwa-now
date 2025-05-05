@@ -27,9 +27,12 @@ import {
 import { TransactionType } from '@/services/dbService';
 import { formatCurrency, formatDate } from '@/lib/formatters';
 import { Plus, X, Edit, Calendar } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const RecurringItems = () => {
   const { recurringItems, categories, addRecurringItem, updateRecurringItem, deleteRecurringItem } = useBudget();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -41,6 +44,12 @@ const RecurringItems = () => {
   const [type, setType] = useState<TransactionType>('expense');
   const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  
+  const frequencyTranslations = {
+    daily: t('frequency_daily'),
+    weekly: t('frequency_weekly'),
+    monthly: t('frequency_monthly'),
+  };
   
   const handleOpenDialog = (item?: typeof recurringItems[0]) => {
     if (item) {
@@ -147,23 +156,23 @@ const RecurringItems = () => {
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Wiederkehrende Posten</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('recurring_items')}</h1>
         
         {recurringItems.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-muted-foreground">Noch keine wiederkehrenden Posten vorhanden</p>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-8 text-center">
+            <p className="text-muted-foreground">{t('no_recurring_items')}</p>
             <Button 
               onClick={() => handleOpenDialog()}
               className="mt-4"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Wiederkehrenden Posten erstellen
+              {t('create_recurring_item')}
             </Button>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md mb-6">
+          <div className="bg-card text-card-foreground rounded-lg shadow-md mb-6">
             <div className="p-4 border-b">
-              <h3 className="font-medium">Alle wiederkehrenden Posten</h3>
+              <h3 className="font-medium">{t('all_recurring_items')}</h3>
             </div>
             
             <div className="divide-y">
@@ -196,12 +205,11 @@ const RecurringItems = () => {
                     </div>
                     <div className="flex items-center text-sm text-muted-foreground mb-1">
                       <Calendar className="h-4 w-4 mr-1" />
-                      <span>Nächste Fälligkeit: {formatDate(nextDueDate)}</span>
+                      <span>{t('next_due_date')}: {formatDate(nextDueDate)}</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {category?.name || 'Unknown Category'} • 
-                      {item.frequency === 'daily' ? ' Täglich' : 
-                       item.frequency === 'weekly' ? ' Wöchentlich' : ' Monatlich'}
+                      {frequencyTranslations[item.frequency]}
                     </div>
                     <div className={`mt-2 font-medium ${item.type === 'income' ? 'text-budget-green' : 'text-budget-red'}`}>
                       {item.type === 'income' ? '+' : '-'} {formatCurrency(item.amount)}
@@ -227,25 +235,25 @@ const RecurringItems = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
             <h3 className="text-lg font-medium mb-4">
-              {editId ? 'Wiederkehrenden Posten bearbeiten' : 'Neuer wiederkehrender Posten'}
+              {editId ? t('edit_recurring_item') : t('create_recurring_item')}
             </h3>
             
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name
+                  {t('name')}
                 </label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="z.B. Miete, Gehalt, etc."
+                  placeholder={t('name_placeholder')}
                 />
               </div>
               
               <div>
                 <label htmlFor="type" className="block text-sm font-medium mb-1">
-                  Typ
+                  {t('type')}
                 </label>
                 <Select value={type} onValueChange={(value: TransactionType) => {
                   setType(value);
@@ -253,7 +261,7 @@ const RecurringItems = () => {
                   setCategoryId('');
                 }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Typ auswählen" />
+                    <SelectValue placeholder={t('type_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="income">Einnahme</SelectItem>
@@ -264,11 +272,11 @@ const RecurringItems = () => {
               
               <div>
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
-                  Kategorie
+                  {t('category')}
                 </label>
                 <Select value={categoryId} onValueChange={setCategoryId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Kategorie auswählen" />
+                    <SelectValue placeholder={t('category_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categories
@@ -284,7 +292,7 @@ const RecurringItems = () => {
               
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium mb-1">
-                  Betrag (€)
+                  {t('amount')} (€)
                 </label>
                 <Input
                   id="amount"
@@ -292,18 +300,18 @@ const RecurringItems = () => {
                   step="0.01"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder="0.00"
+                  placeholder={t('amount_placeholder')}
                   className="text-lg"
                 />
               </div>
               
               <div>
                 <label htmlFor="frequency" className="block text-sm font-medium mb-1">
-                  Häufigkeit
+                  {t('frequency')}
                 </label>
                 <Select value={frequency} onValueChange={(value: 'daily' | 'weekly' | 'monthly') => setFrequency(value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Häufigkeit auswählen" />
+                    <SelectValue placeholder={t('frequency_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="daily">Täglich</SelectItem>
@@ -315,7 +323,7 @@ const RecurringItems = () => {
               
               <div>
                 <label htmlFor="startDate" className="block text-sm font-medium mb-1">
-                  Startdatum
+                  {t('start_date')}
                 </label>
                 <Input
                   id="startDate"
@@ -331,13 +339,13 @@ const RecurringItems = () => {
                   variant="outline" 
                   onClick={() => setDialogOpen(false)}
                 >
-                  Abbrechen
+                  {t('cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleSave}
                 >
-                  {editId ? 'Aktualisieren' : 'Speichern'}
+                  {editId ? t('update') : t('save')}
                 </Button>
               </div>
             </div>
@@ -348,14 +356,14 @@ const RecurringItems = () => {
         <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Wiederkehrenden Posten löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('delete_recurring_item')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie diesen wiederkehrenden Posten löschen möchten?
+                {t('delete_confirmation')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Löschen</AlertDialogAction>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm}>{t('delete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

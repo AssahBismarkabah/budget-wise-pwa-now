@@ -29,9 +29,12 @@ import {
 } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { X, Edit, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Limits = () => {
   const { limits, categories, transactions, addLimit, updateLimit, deleteLimit } = useBudget();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const [newLimitOpen, setNewLimitOpen] = useState(false);
   const [editLimitId, setEditLimitId] = useState<string | null>(null);
   const [deleteLimitId, setDeleteLimitId] = useState<string | null>(null);
@@ -116,17 +119,17 @@ const Limits = () => {
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Limits</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('limits')}</h1>
         
         {limits.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-muted-foreground">Bisher wurden noch keine Limits angelegt</p>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-8 text-center">
+            <p className="text-muted-foreground">{t('no_limits_yet')}</p>
             <Button 
               onClick={() => setNewLimitOpen(true)}
               className="mt-4"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Limit hinzufügen
+              {t('add_limit')}
             </Button>
           </div>
         ) : (
@@ -140,9 +143,9 @@ const Limits = () => {
                 const isExceeded = spending > limit.amount;
                 
                 return (
-                  <div key={limit.id} className="bg-white rounded-lg shadow-md p-4">
+                  <div key={limit.id} className="bg-card text-card-foreground rounded-lg shadow-md p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{category?.name || 'Unknown Category'}</h3>
+                      <h3 className="font-medium">{category?.name || t('unknown_category')}</h3>
                       <div className="flex items-center space-x-2">
                         <Button 
                           variant="ghost" 
@@ -164,14 +167,14 @@ const Limits = () => {
                     </div>
                     
                     <div className="flex justify-between mb-1 text-sm">
-                      <span>Ausgaben: {formatCurrency(spending)}</span>
-                      <span>Limit: {formatCurrency(limit.amount)}</span>
+                      <span>{t('spending')}: {formatCurrency(spending)}</span>
+                      <span>{t('limit')}: {formatCurrency(limit.amount)}</span>
                     </div>
                     
                     <Progress 
                       value={progress}
                       className={cn(
-                        isExceeded ? "bg-budget-red/20" : "bg-gray-100", 
+                        isExceeded ? "bg-budget-red/20" : "bg-muted", 
                         "h-2",
                         isExceeded ? "text-budget-red" : "text-budget-blue"
                       )}
@@ -179,7 +182,7 @@ const Limits = () => {
                     
                     {isExceeded && (
                       <p className="text-budget-red text-sm mt-2">
-                        Limit um {formatCurrency(spending - limit.amount)} überschritten
+                        {t('limit_exceeded')} {formatCurrency(spending - limit.amount)}
                       </p>
                     )}
                   </div>
@@ -208,17 +211,17 @@ const Limits = () => {
         <Dialog open={newLimitOpen} onOpenChange={setNewLimitOpen}>
           <DialogContent>
             <h3 className="text-lg font-medium mb-4">
-              {editLimitId ? 'Limit bearbeiten' : 'Neues Limit'}
+              {editLimitId ? t('edit_limit') : t('new_limit')}
             </h3>
             
             <div className="space-y-4">
               <div>
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
-                  Kategorie
+                  {t('category')}
                 </label>
                 <Select value={categoryId} onValueChange={setCategoryId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Kategorie auswählen" />
+                    <SelectValue placeholder={t('select_category')} />
                   </SelectTrigger>
                   <SelectContent>
                     {expenseCategories.map((category) => (
@@ -232,7 +235,7 @@ const Limits = () => {
               
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium mb-1">
-                  Limit (€)
+                  {t('limit')} (€)
                 </label>
                 <Input
                   id="amount"
@@ -252,13 +255,13 @@ const Limits = () => {
                   variant="outline" 
                   onClick={() => setNewLimitOpen(false)}
                 >
-                  Abbrechen
+                  {t('cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleAddOrUpdateLimit}
                 >
-                  {editLimitId ? 'Aktualisieren' : 'Speichern'}
+                  {editLimitId ? t('update') : t('save')}
                 </Button>
               </div>
             </div>
@@ -269,14 +272,14 @@ const Limits = () => {
         <AlertDialog open={!!deleteLimitId} onOpenChange={() => setDeleteLimitId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Limit löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('delete_limit')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie dieses Limit löschen möchten?
+                {t('are_you_sure_delete')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Löschen</AlertDialogAction>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm}>{t('delete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

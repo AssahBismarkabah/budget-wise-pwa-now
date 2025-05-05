@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -9,12 +8,13 @@ import { formatCurrency, getFirstDayOfMonth, getLastDayOfMonth } from '@/lib/for
 import TransactionForm from '@/components/TransactionForm';
 import TransactionItem from '@/components/TransactionItem';
 import { cn } from '@/lib/utils';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import Logo from '@/components/Logo';
 
 const Index = () => {
   const { transactions, currentAccount } = useBudget();
-  const { t } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   const [incomeDialogOpen, setIncomeDialogOpen] = useState(false);
   const [expenseDialogOpen, setExpenseDialogOpen] = useState(false);
 
@@ -45,14 +45,14 @@ const Index = () => {
   return (
     <Layout>
       {/* Account Banner */}
-      <div className="bg-gradient-to-r from-budget-blue to-budget-blue/80 text-white p-6 flex justify-between items-center rounded-b-lg shadow-md">
+      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 flex justify-between items-center rounded-b-lg shadow-md">
         <div className="flex flex-col">
           <h2 className="text-xl font-medium">
             {currentAccount?.name || t('account_placeholder')}
           </h2>
           <p className="text-sm opacity-80 mt-1">
             {new Date().toLocaleDateString(
-              { de: 'de-DE', en: 'en-US' }[localStorage.getItem('language') || 'de'], 
+              { de: 'de-DE', en: 'en-US' }[language], 
               { month: 'long', year: 'numeric' }
             )}
           </p>
@@ -62,18 +62,18 @@ const Index = () => {
 
       {/* Budget Summary */}
       <div className="p-4">
-        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-4">
           <h3 className="text-lg font-medium mb-4">{t('overview')}</h3>
           
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-md shadow-sm">
+            <div className="p-3 bg-secondary text-secondary-foreground rounded-md shadow-sm">
               <div className="text-sm text-muted-foreground">{t('income_categories')}</div>
               <div className="text-xl font-medium text-budget-green">
                 {formatCurrency(totalIncome)}
               </div>
             </div>
             
-            <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-md shadow-sm">
+            <div className="p-3 bg-secondary text-secondary-foreground rounded-md shadow-sm">
               <div className="text-sm text-muted-foreground">{t('expense_categories')}</div>
               <div className="text-xl font-medium text-budget-red">
                 {formatCurrency(totalExpense)}
@@ -81,7 +81,7 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-md shadow-sm">
+          <div className="p-3 bg-secondary text-secondary-foreground rounded-md shadow-sm">
             <div className="text-sm text-muted-foreground">{t('balance')}</div>
             <div className={cn(
               "text-2xl font-medium",
@@ -95,7 +95,7 @@ const Index = () => {
 
       {/* Transaction List */}
       <div className="p-4">
-        <div className="bg-white rounded-lg shadow-md">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md">
           <div className="p-4 border-b flex items-center justify-between">
             <h3 className="text-lg font-medium">{t('transactions')}</h3>
           </div>

@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 interface LogoProps {
   size?: 'small' | 'medium' | 'large';
@@ -9,7 +8,7 @@ interface LogoProps {
 }
 
 const Logo = ({ size = 'medium', showText = true, className = '' }: LogoProps) => {
-  const { t } = useLanguage();
+  const { t } = useTranslation();
   
   // Set dimensions based on size
   const getSizeDimensions = () => {

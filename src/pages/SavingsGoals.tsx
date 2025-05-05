@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { X, Edit, Plus, Calendar } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const SavingsGoals = () => {
   const { savingsGoals, transactions, addSavingsGoal, updateSavingsGoal, deleteSavingsGoal } = useBudget();
@@ -104,20 +105,23 @@ const SavingsGoals = () => {
     }
   };
   
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
+  
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Sparziele</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('savingsGoals.title')}</h1>
         
         {savingsGoals.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-muted-foreground">Bisher wurden noch keine Sparziele angelegt</p>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-8 text-center">
+            <p className="text-muted-foreground">{t('savingsGoals.noGoals')}</p>
             <Button 
               onClick={() => setNewGoalOpen(true)}
               className="mt-4"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Sparziel hinzufügen
+              {t('savingsGoals.addGoal')}
             </Button>
           </div>
         ) : (
@@ -129,7 +133,7 @@ const SavingsGoals = () => {
                 const progress = calculateProgress(currentSavings, goal.targetAmount);
                 
                 return (
-                  <div key={goal.id} className="bg-white rounded-lg shadow-md p-4">
+                  <div key={goal.id} className="bg-card text-card-foreground rounded-lg shadow-md p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium">{goal.name}</h3>
                       <div className="flex items-center space-x-2">
@@ -154,21 +158,21 @@ const SavingsGoals = () => {
                     
                     <div className="flex items-center text-sm mb-1">
                       <Calendar className="h-4 w-4 mr-1 text-muted-foreground" />
-                      <span>Bis {formatDate(goal.deadline)}</span>
+                      <span>{t('savingsGoals.deadline')}: {formatDate(goal.deadline)}</span>
                     </div>
                     
                     <div className="flex justify-between mb-1 text-sm mt-2">
-                      <span>Gespart: {formatCurrency(currentSavings)}</span>
-                      <span>Ziel: {formatCurrency(goal.targetAmount)}</span>
+                      <span>{t('savingsGoals.saved')}: {formatCurrency(currentSavings)}</span>
+                      <span>{t('savingsGoals.target')}: {formatCurrency(goal.targetAmount)}</span>
                     </div>
                     
                     <Progress 
                       value={progress}
-                      className="h-2 bg-gray-100 text-budget-blue"
+                      className="h-2 bg-muted text-budget-blue"
                     />
                     
                     <p className="text-sm mt-2">
-                      Noch {formatCurrency(goal.targetAmount - currentSavings)} bis zum Ziel
+                      {t('savingsGoals.remaining')} {formatCurrency(goal.targetAmount - currentSavings)} {t('savingsGoals.untilTarget')}
                     </p>
                   </div>
                 );
@@ -197,27 +201,27 @@ const SavingsGoals = () => {
         <Dialog open={newGoalOpen} onOpenChange={setNewGoalOpen}>
           <DialogContent>
             <h3 className="text-lg font-medium mb-4">
-              {editGoalId ? 'Sparziel bearbeiten' : 'Neues Sparziel'}
+              {editGoalId ? t('savingsGoals.editGoal') : t('savingsGoals.newGoal')}
             </h3>
             
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name
+                  {t('savingsGoals.name')}
                 </label>
                 <Input
                   id="name"
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="z.B. Urlaub, Auto, etc."
+                  placeholder={t('savingsGoals.namePlaceholder')}
                   required
                 />
               </div>
               
               <div>
                 <label htmlFor="targetAmount" className="block text-sm font-medium mb-1">
-                  Zielbetrag (€)
+                  {t('savingsGoals.targetAmount')} (€)
                 </label>
                 <Input
                   id="targetAmount"
@@ -233,7 +237,7 @@ const SavingsGoals = () => {
               
               <div>
                 <label htmlFor="deadline" className="block text-sm font-medium mb-1">
-                  Zieldatum
+                  {t('savingsGoals.deadline')}
                 </label>
                 <Input
                   id="deadline"
@@ -250,13 +254,13 @@ const SavingsGoals = () => {
                   variant="outline" 
                   onClick={() => setNewGoalOpen(false)}
                 >
-                  Abbrechen
+                  {t('savingsGoals.cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleAddOrUpdateGoal}
                 >
-                  {editGoalId ? 'Aktualisieren' : 'Speichern'}
+                  {editGoalId ? t('savingsGoals.update') : t('savingsGoals.save')}
                 </Button>
               </div>
             </div>
@@ -267,14 +271,14 @@ const SavingsGoals = () => {
         <AlertDialog open={!!deleteGoalId} onOpenChange={() => setDeleteGoalId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Sparziel löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('savingsGoals.deleteConfirmTitle')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie dieses Sparziel löschen möchten?
+                {t('savingsGoals.deleteConfirmDescription')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Löschen</AlertDialogAction>
+              <AlertDialogCancel>{t('savingsGoals.deleteConfirmCancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm}>{t('savingsGoals.deleteConfirmDelete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

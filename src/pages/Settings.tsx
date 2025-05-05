@@ -1,8 +1,7 @@
-
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -29,7 +28,8 @@ import {
 
 const Settings = () => {
   const { resetApp, addAccount } = useBudget();
-  const { language, setLanguage, t } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newAccountOpen, setNewAccountOpen] = useState(false);
@@ -77,13 +77,13 @@ const Settings = () => {
         <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
         
         {/* Account Management */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('accounts')}</h2>
           <Button onClick={() => setNewAccountOpen(true)}>{t('new_account')}</Button>
         </div>
         
         {/* App Settings */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('app_settings')}</h2>
           
           {/* Language Selector */}
@@ -99,10 +99,10 @@ const Settings = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage('de')}>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage('de')}>
                   {t('german')}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('en')}>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage('en')}>
                   {t('english')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -134,7 +134,7 @@ const Settings = () => {
         </div>
         
         {/* Feedback Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('feedback')}</h2>
           <div className="space-y-4">
             <p className="text-sm">
@@ -149,7 +149,7 @@ const Settings = () => {
         </div>
         
         {/* About Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('about')}</h2>
           <div className="space-y-2">
             <p>

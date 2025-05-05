@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { useBudget } from '@/contexts/BudgetContext';
 import { Transaction, TransactionType } from '@/services/dbService';
+import { useTranslation } from 'react-i18next';
 
 interface TransactionFormProps {
   type: TransactionType;
@@ -21,6 +21,7 @@ interface TransactionFormProps {
 
 const TransactionForm = ({ type, onSave, onCancel, editTransaction }: TransactionFormProps) => {
   const { categories, addTransaction, updateTransaction } = useBudget();
+  const { t } = useTranslation();
   
   const [amount, setAmount] = useState(editTransaction?.amount.toString() || '');
   const [categoryId, setCategoryId] = useState(editTransaction?.category || '');
@@ -41,12 +42,12 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
     e.preventDefault();
     
     if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
-      alert('Bitte geben Sie einen gültigen Betrag ein.');
+      alert(t('please_enter_valid_amount'));
       return;
     }
     
     if (!categoryId) {
-      alert('Bitte wählen Sie eine Kategorie.');
+      alert(t('please_select_category'));
       return;
     }
     
@@ -75,7 +76,7 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="amount" className="block text-sm font-medium mb-1">
-          Betrag (€)
+          {t('amount')} (€)
         </label>
         <Input
           id="amount"
@@ -83,7 +84,7 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
           step="0.01"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="0.00"
+          placeholder={t('amount_placeholder')}
           className="text-lg"
           required
         />
@@ -91,11 +92,11 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
       
       <div>
         <label htmlFor="category" className="block text-sm font-medium mb-1">
-          Kategorie
+          {t('category')}
         </label>
         <Select value={categoryId} onValueChange={setCategoryId}>
           <SelectTrigger>
-            <SelectValue placeholder="Kategorie auswählen" />
+            <SelectValue placeholder={t('category_placeholder')} />
           </SelectTrigger>
           <SelectContent>
             {filteredCategories.map((category) => (
@@ -109,7 +110,7 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
       
       <div>
         <label htmlFor="date" className="block text-sm font-medium mb-1">
-          Datum
+          {t('date')}
         </label>
         <Input
           id="date"
@@ -122,26 +123,26 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
       
       <div>
         <label htmlFor="title" className="block text-sm font-medium mb-1">
-          Beschreibung
+          {t('note')}
         </label>
         <Input
           id="title"
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Beschreibung (optional)"
+          placeholder={t('note_placeholder')}
         />
       </div>
       
       <div className="flex justify-between pt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
-          Abbrechen
+          {t('cancel')}
         </Button>
         <Button 
           type="submit"
           className={type === 'income' ? 'bg-budget-green hover:bg-budget-green/90' : 'bg-budget-red hover:bg-budget-red/90'}
         >
-          {editTransaction ? 'Aktualisieren' : 'Speichern'}
+          {editTransaction ? t('update') : t('save')}
         </Button>
       </div>
     </form>

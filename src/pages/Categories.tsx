@@ -1,9 +1,8 @@
-
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -27,7 +26,8 @@ import { X, Plus, Tag } from 'lucide-react';
 const Categories = () => {
   const { type } = useParams<{ type: string }>();
   const { categories, addCategory, deleteCategory } = useBudget();
-  const { t } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   
   const [newDialogOpen, setNewDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -58,6 +58,19 @@ const Categories = () => {
     }
   };
   
+  const defaultCategoryTranslations: Record<string, string> = {
+    'Bus': t('category_bus'),
+    'Kleidung': t('category_clothing'),
+    'Ausgehen': t('category_going_out'),
+    'Hobby': t('category_hobby'),
+    'Lebensmittel': t('category_food'),
+    'Allgemein': t('category_general'),
+    'Wohnen': t('category_housing'),
+    'Internet': t('category_internet'),
+    'Freizeit': t('category_leisure'),
+    // Add more as needed
+  };
+  
   return (
     <Layout>
       <div className="p-6">
@@ -69,7 +82,7 @@ const Categories = () => {
         </div>
         
         {/* Categories List */}
-        <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md mb-6 overflow-hidden">
           {filteredCategories.length === 0 ? (
             <div className="p-8 text-center">
               <p className="text-muted-foreground">{t('no_categories')}</p>
@@ -89,10 +102,10 @@ const Categories = () => {
               
               <ul className="divide-y">
                 {filteredCategories.map((category) => (
-                  <li key={category.id} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                  <li key={category.id} className="flex items-center justify-between p-4 hover:bg-accent transition-colors">
                     <div className="flex items-center">
                       <div className={`w-3 h-3 rounded-full mr-3 ${categoryType === 'income' ? 'bg-budget-green' : 'bg-budget-red'}`}></div>
-                      <span>{category.name}</span>
+                      <span>{defaultCategoryTranslations[category.name] || category.name}</span>
                     </div>
                     {!category.isDefault && (
                       <Button 

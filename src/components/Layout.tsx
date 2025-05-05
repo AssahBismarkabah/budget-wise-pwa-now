@@ -14,12 +14,12 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useBudget } from '@/contexts/BudgetContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import Logo from './Logo';
+import { useTranslation } from 'react-i18next';
 
 interface LayoutProps {
   children: ReactNode;
@@ -30,7 +30,8 @@ const Layout = ({ children }: LayoutProps) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
   const { currentAccount, accounts, switchAccount, isLoading } = useBudget();
-  const { t } = useLanguage();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   
   // Apply dark mode class to html element
   useEffect(() => {
@@ -70,9 +71,9 @@ const Layout = ({ children }: LayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-background dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 text-budget-blue dark:text-white border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10 shadow-sm transition-colors duration-300">
+      <header className="bg-card dark:bg-gray-800 text-primary-foreground dark:text-white border-b border-border dark:border-gray-700 sticky top-0 z-10 shadow-sm transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
@@ -80,7 +81,7 @@ const Layout = ({ children }: LayoutProps) => {
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setSidebarOpen(true)}
-                className="text-budget-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 mr-2"
+                className="text-primary-foreground dark:text-white hover:bg-accent dark:hover:bg-gray-700 mr-2"
               >
                 <Menu className="h-5 w-5" />
               </Button>
@@ -92,7 +93,7 @@ const Layout = ({ children }: LayoutProps) => {
                 variant="ghost"
                 size="icon"
                 onClick={toggleDarkMode}
-                className="text-budget-blue dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="text-primary-foreground dark:text-white hover:bg-accent dark:hover:bg-gray-700"
                 title={isDarkMode ? t('light_mode') : t('dark_mode')}
               >
                 {isDarkMode ? (
@@ -101,7 +102,7 @@ const Layout = ({ children }: LayoutProps) => {
                   <Moon className="h-5 w-5" />
                 )}
               </Button>
-              <Avatar className="h-8 w-8 bg-budget-blue text-white">
+              <Avatar className="h-8 w-8 bg-primary">
                 <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
               </Avatar>
             </div>
@@ -120,12 +121,12 @@ const Layout = ({ children }: LayoutProps) => {
       
       <div 
         className={cn(
-          "fixed left-0 top-0 z-30 h-full w-64 bg-white dark:bg-gray-800 shadow-xl transform transition-transform overflow-y-auto animate-slide-in",
+          "fixed left-0 top-0 z-30 h-full w-64 bg-card dark:bg-gray-800 shadow-xl transform transition-transform overflow-y-auto animate-slide-in",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Sidebar Header */}
-        <div className="p-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+        <div className="p-4 flex items-center justify-between border-b border-border dark:border-gray-700 bg-background dark:bg-gray-900">
           <Logo showText={true} size="small" />
           <Button 
             variant="ghost" 
@@ -138,7 +139,7 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Dark Mode Toggle in Sidebar */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-gray-700">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium dark:text-white">{isDarkMode ? t('dark_mode') : t('light_mode')}</span>
             <Switch 
@@ -150,12 +151,12 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
         
         {/* Account Section */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('accounts')}</h3>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full flex items-center justify-start gap-2 hover:bg-budget-blue/5 dark:text-white dark:hover:bg-gray-700">
-                <Avatar className="h-8 w-8 bg-budget-blue text-white">
+              <Button variant="outline" className="w-full flex items-center justify-start gap-2 hover:bg-accent dark:text-white dark:hover:bg-gray-700">
+                <Avatar className="h-8 w-8 bg-primary">
                   <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
                 </Avatar>
                 <span className="font-medium">{currentAccount?.name || 'Mein Konto'}</span>
@@ -175,7 +176,7 @@ const Layout = ({ children }: LayoutProps) => {
                         setSidebarOpen(false);
                       }}
                     >
-                      <Avatar className="h-6 w-6 bg-budget-blue text-white">
+                      <Avatar className="h-6 w-6 bg-primary">
                         <AvatarFallback>{account.initials}</AvatarFallback>
                       </Avatar>
                       <span>{account.name}</span>
@@ -188,12 +189,12 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Main Navigation */}
-        <div className="p-4 space-y-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 space-y-2 border-b border-border dark:border-gray-700">
           <Link 
             to="/" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-              location.pathname === '/' && "bg-budget-blue/10 font-medium text-budget-blue"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
+              location.pathname === '/' && "bg-accent font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -204,8 +205,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/limits" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-              location.pathname === '/limits' && "bg-budget-blue/10 font-medium text-budget-blue"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
+              location.pathname === '/limits' && "bg-accent font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -216,8 +217,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/savings-goals" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-              location.pathname === '/savings-goals' && "bg-budget-blue/10 font-medium text-budget-blue"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
+              location.pathname === '/savings-goals' && "bg-accent font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -228,8 +229,8 @@ const Layout = ({ children }: LayoutProps) => {
           <Link 
             to="/statistics" 
             className={cn(
-              "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-              location.pathname === '/statistics' && "bg-budget-blue/10 font-medium text-budget-blue"
+              "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
+              location.pathname === '/statistics' && "bg-accent font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -239,14 +240,14 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Categories */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('categories')}</h3>
           <div className="space-y-2">
             <Link 
               to="/categories/income" 
               className={cn(
-                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-                location.pathname === '/categories/income' && "bg-budget-blue/10 font-medium text-budget-blue"
+                "block p-2 rounded-md hover:bg-accent transition-colors",
+                location.pathname === '/categories/income' && "bg-accent font-medium text-primary"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -255,8 +256,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/categories/expense" 
               className={cn(
-                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-                location.pathname === '/categories/expense' && "bg-budget-blue/10 font-medium text-budget-blue"
+                "block p-2 rounded-md hover:bg-accent transition-colors",
+                location.pathname === '/categories/expense' && "bg-accent font-medium text-primary"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -266,14 +267,14 @@ const Layout = ({ children }: LayoutProps) => {
         </div>
 
         {/* Tools */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-border dark:border-gray-700">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t('tools')}</h3>
           <div className="space-y-2">
             <Link 
               to="/templates" 
               className={cn(
-                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-                location.pathname === '/templates' && "bg-budget-blue/10 font-medium text-budget-blue"
+                "block p-2 rounded-md hover:bg-accent transition-colors",
+                location.pathname === '/templates' && "bg-accent font-medium text-primary"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -282,8 +283,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/recurring" 
               className={cn(
-                "block p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-                location.pathname === '/recurring' && "bg-budget-blue/10 font-medium text-budget-blue"
+                "block p-2 rounded-md hover:bg-accent transition-colors",
+                location.pathname === '/recurring' && "bg-accent font-medium text-primary"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -299,8 +300,8 @@ const Layout = ({ children }: LayoutProps) => {
             <Link 
               to="/settings" 
               className={cn(
-                "flex items-center gap-3 p-2 rounded-md hover:bg-budget-blue/10 transition-colors",
-                location.pathname === '/settings' && "bg-budget-blue/10 font-medium text-budget-blue"
+                "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
+                location.pathname === '/settings' && "bg-accent font-medium text-primary"
               )}
               onClick={() => setSidebarOpen(false)}
             >
@@ -322,12 +323,12 @@ const Layout = ({ children }: LayoutProps) => {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex justify-around py-2 z-10 transition-colors duration-300">
+      <nav className="fixed bottom-0 left-0 right-0 bg-card dark:bg-gray-800 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] flex justify-around py-2 z-10 transition-colors duration-300">
         <Link 
           to="/" 
           className={cn(
             "flex flex-col items-center p-2 transition-colors",
-            location.pathname === '/' ? "text-budget-blue" : "text-gray-500"
+            location.pathname === '/' ? "text-primary" : "text-muted-foreground"
           )}
         >
           <Home className="h-6 w-6" />
@@ -338,7 +339,7 @@ const Layout = ({ children }: LayoutProps) => {
           to="/limits" 
           className={cn(
             "flex flex-col items-center p-2 transition-colors",
-            location.pathname === '/limits' ? "text-budget-blue" : "text-gray-500"
+            location.pathname === '/limits' ? "text-primary" : "text-muted-foreground"
           )}
         >
           <BarChart className="h-6 w-6" />
@@ -349,7 +350,7 @@ const Layout = ({ children }: LayoutProps) => {
           to="/savings-goals" 
           className={cn(
             "flex flex-col items-center p-2 transition-colors",
-            location.pathname === '/savings-goals' ? "text-budget-blue" : "text-gray-500"
+            location.pathname === '/savings-goals' ? "text-primary" : "text-muted-foreground"
           )}
         >
           <Target className="h-6 w-6" />
@@ -360,7 +361,7 @@ const Layout = ({ children }: LayoutProps) => {
           to="/statistics" 
           className={cn(
             "flex flex-col items-center p-2 transition-colors",
-            location.pathname === '/statistics' ? "text-budget-blue" : "text-gray-500"
+            location.pathname === '/statistics' ? "text-primary" : "text-muted-foreground"
           )}
         >
           <PieChart className="h-6 w-6" />
