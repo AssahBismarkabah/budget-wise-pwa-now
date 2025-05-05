@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
@@ -165,8 +164,7 @@ const SavingsGoals = () => {
                     
                     <Progress 
                       value={progress}
-                      className="h-2 bg-gray-100"
-                      indicatorClassName="bg-budget-blue"
+                      className="h-2 bg-gray-100 text-budget-blue"
                     />
                     
                     <p className="text-sm mt-2">

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
@@ -173,9 +172,9 @@ const Limits = () => {
                       value={progress}
                       className={cn(
                         isExceeded ? "bg-budget-red/20" : "bg-gray-100", 
-                        "h-2"
+                        "h-2",
+                        isExceeded ? "text-budget-red" : "text-budget-blue"
                       )}
-                      indicatorClassName={isExceeded ? "bg-budget-red" : "bg-budget-blue"}
                     />
                     
                     {isExceeded && (
