@@ -94,7 +94,7 @@ const Statistics = () => {
         const balance = income - expense;
         
         return {
-          name: getMonthName(index),
+          name: getMonthName(index, t),
           income,
           expense,
           balance,
@@ -226,7 +226,7 @@ const Statistics = () => {
                 className="border rounded p-2"
               >
                 {Array.from({ length: 12 }, (_, i) => i).map((m) => (
-                  <option key={m} value={m}>{getMonthName(m)}</option>
+                  <option key={m} value={m}>{getMonthName(m, t)}</option>
                 ))}
               </select>
             </div>
@@ -306,7 +306,7 @@ const Statistics = () => {
         {/* Pie Chart for Category Distribution */}
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h3 className="text-lg font-medium mb-4">
-            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
+            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month, t)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
           </h3>
           <div className="h-64">
             {categoryData.length > 0 ? (
