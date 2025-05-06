@@ -42,12 +42,15 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   
   const handleResetConfirm = async () => {
+    setLoading(true);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1800)); // 1.8s delay
       await resetApp();
       setResetDialogOpen(false);
     } catch (error) {
       console.error('Failed to reset app:', error);
     }
+    setLoading(false);
   };
   
   const handleAddAccount = async () => {
