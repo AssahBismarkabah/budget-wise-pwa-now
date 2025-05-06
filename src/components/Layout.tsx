@@ -22,6 +22,7 @@ import Logo from './Logo';
 import { useTranslation } from 'react-i18next';
 import FeedbackForm from './FeedbackForm';
 import Spinner from './ui/Spinner';
+import ProfileDialog from './ProfileDialog';
 
 interface LayoutProps {
   children: ReactNode;
@@ -34,6 +35,7 @@ const Layout = ({ children }: LayoutProps) => {
   const { currentAccount, accounts, switchAccount, isLoading } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
   
   // Apply dark mode class to html element
   useEffect(() => {
@@ -104,9 +106,15 @@ const Layout = ({ children }: LayoutProps) => {
                   <Moon className="h-5 w-5" />
                 )}
               </Button>
-              <Avatar className="h-8 w-8 bg-primary">
-                <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
-              </Avatar>
+              <Button variant="ghost" size="icon" onClick={() => setProfileDialogOpen(true)}>
+                <Avatar className="h-8 w-8 bg-primary">
+                  {currentAccount?.profileImage ? (
+                    <img src={currentAccount.profileImage} alt="Profile" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <AvatarFallback>{currentAccount?.initials || 'MK'}</AvatarFallback>
+                  )}
+                </Avatar>
+              </Button>
             </div>
           </div>
         </div>
@@ -375,6 +383,8 @@ const Layout = ({ children }: LayoutProps) => {
           <span className="text-xs mt-1">{t('statistics')}</span>
         </Link>
       </nav>
+
+      <ProfileDialog open={profileDialogOpen} onOpenChange={setProfileDialogOpen} />
     </div>
   );
 };

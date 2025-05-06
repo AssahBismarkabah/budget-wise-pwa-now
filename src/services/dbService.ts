@@ -1,4 +1,3 @@
-
 // Database initialization and operations
 
 // Define types
@@ -61,6 +60,8 @@ export interface Account {
   id: string;
   name: string;
   initials: string;
+  profileImage?: string; // base64 or URL
+  email?: string;
 }
 
 // Default data
@@ -70,6 +71,8 @@ export const DEFAULT_ACCOUNT: Account = {
   id: DEFAULT_ACCOUNT_ID,
   name: 'Mein Konto',
   initials: 'MK',
+  profileImage: '',
+  email: '',
 };
 
 export const DEFAULT_CATEGORIES: Category[] = [

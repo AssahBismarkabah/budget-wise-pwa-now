@@ -24,6 +24,7 @@ interface BudgetContextType {
   switchAccount: (accountId: string) => void;
   addAccount: (name: string) => Promise<void>;
   deleteAccount: (accountId: string) => Promise<void>;
+  updateAccount: (account: Account) => Promise<void>;
   
   // Transactions
   transactions: Transaction[];
@@ -357,6 +358,27 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
       toast({
         title: 'Error',
         description: 'Failed to delete account',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const updateAccount = async (account: Account) => {
+    try {
+      await update('accounts', account);
+      setAccounts(accounts.map(a => (a.id === account.id ? account : a)));
+      if (currentAccount?.id === account.id) {
+        setCurrentAccount(account);
+      }
+      toast({
+        title: 'Profile updated',
+        description: 'Your profile has been updated.',
+      });
+    } catch (error) {
+      console.error('Failed to update account:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update profile',
         variant: 'destructive',
       });
     }
@@ -807,6 +829,7 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
     switchAccount,
     addAccount,
     deleteAccount,
+    updateAccount,
     transactions,
     addTransaction,
     updateTransaction,
