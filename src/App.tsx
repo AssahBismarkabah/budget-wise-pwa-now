@@ -18,6 +18,7 @@ import RecurringItems from "./pages/RecurringItems";
 import Onboarding from "./pages/Onboarding";
 import { useTranslation } from 'react-i18next';
 import { useAccount } from "@/contexts/AccountContext";
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => {
               <BudgetProvider>
                 <Toaster />
                 <Sonner />
+                <PWAInstallPrompt />
                 <Routes>
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route
