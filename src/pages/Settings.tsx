@@ -25,11 +25,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAccount } from '@/contexts/AccountContext';
 
 const Settings = () => {
   const { resetApp, addAccount } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
+  const { logout } = useAccount();
   
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newAccountOpen, setNewAccountOpen] = useState(false);
@@ -225,6 +227,18 @@ const Settings = () => {
             </div>
           </DialogContent>
         </Dialog>
+        
+        {/* Add this section */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-medium">{t('account')}</h2>
+          <Button
+            variant="destructive"
+            onClick={logout}
+            className="w-full"
+          >
+            {t('logout')}
+          </Button>
+        </div>
       </div>
     </Layout>
   );

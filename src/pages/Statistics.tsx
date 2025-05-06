@@ -9,9 +9,10 @@ const Statistics = () => {
   const { transactions, categories } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
-  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  const [period, setPeriod] = useState<'daily' | 'monthly' | 'yearly'>('monthly');
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
+  const [day, setDay] = useState(new Date().getDate());
   const [chartData, setChartData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
   
@@ -30,10 +31,45 @@ const Statistics = () => {
   useEffect(() => {
     prepareChartData();
     prepareCategoryData();
-  }, [transactions, period, year, month]);
+  }, [transactions, period, year, month, day]);
   
   const prepareChartData = () => {
-    if (period === 'monthly') {
+    if (period === 'daily') {
+      // Filter transactions for the selected day
+      const dayTransactions = transactions.filter(t => {
+        const date = new Date(t.date);
+        return date.getFullYear() === year && 
+               date.getMonth() === month && 
+               date.getDate() === day;
+      });
+      
+      // Group by hour
+      const hourlyData = Array(24).fill(0).map((_, index) => {
+        const hourTransactions = dayTransactions.filter(t => {
+          const date = new Date(t.date);
+          return date.getHours() === index;
+        });
+        
+        const income = hourTransactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expense = hourTransactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = income - expense;
+        
+        return {
+          name: `${index}:00`,
+          income,
+          expense,
+          balance,
+        };
+      });
+      
+      setChartData(hourlyData);
+    } else if (period === 'monthly') {
       // Filter transactions for the selected year
       const yearTransactions = transactions.filter(t => {
         const date = new Date(t.date);
@@ -100,10 +136,16 @@ const Statistics = () => {
   };
   
   const prepareCategoryData = () => {
-    // Filter transactions based on period
     let filteredTransactions;
     
-    if (period === 'monthly') {
+    if (period === 'daily') {
+      filteredTransactions = transactions.filter(t => {
+        const date = new Date(t.date);
+        return date.getFullYear() === year && 
+               date.getMonth() === month && 
+               date.getDate() === day;
+      });
+    } else if (period === 'monthly') {
       filteredTransactions = transactions.filter(t => {
         const date = new Date(t.date);
         return date.getFullYear() === year && date.getMonth() === month;
@@ -155,9 +197,10 @@ const Statistics = () => {
           <div>
             <select
               value={period}
-              onChange={(e) => setPeriod(e.target.value as 'monthly' | 'yearly')}
+              onChange={(e) => setPeriod(e.target.value as 'daily' | 'monthly' | 'yearly')}
               className="border rounded p-2"
             >
+              <option value="daily">{t('daily')}</option>
               <option value="monthly">{t('monthly')}</option>
               <option value="yearly">{t('yearly')}</option>
             </select>
@@ -175,7 +218,7 @@ const Statistics = () => {
             </select>
           </div>
           
-          {period === 'monthly' && (
+          {period !== 'yearly' && (
             <div>
               <select
                 value={month}
@@ -184,6 +227,23 @@ const Statistics = () => {
               >
                 {Array.from({ length: 12 }, (_, i) => i).map((m) => (
                   <option key={m} value={m}>{getMonthName(m)}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          
+          {period === 'daily' && (
+            <div>
+              <select
+                value={day}
+                onChange={(e) => setDay(Number(e.target.value))}
+                className="border rounded p-2"
+              >
+                {Array.from(
+                  { length: new Date(year, month + 1, 0).getDate() }, 
+                  (_, i) => i + 1
+                ).map((d) => (
+                  <option key={d} value={d}>{d}</option>
                 ))}
               </select>
             </div>
@@ -222,7 +282,7 @@ const Statistics = () => {
         {/* Bar Chart */}
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h3 className="text-lg font-medium mb-4">
-            {period === 'monthly' ? `${t('monthly_overview')} ${year}` : t('yearly_overview')}
+            {period === 'monthly' ? `${t('monthly_overview')} ${year}` : period === 'daily' ? `${t('daily_overview')} ${year}-${month}-${day}` : t('yearly_overview')}
           </h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -246,7 +306,7 @@ const Statistics = () => {
         {/* Pie Chart for Category Distribution */}
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h3 className="text-lg font-medium mb-4">
-            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month)} ${year})` : `(${year})`}
+            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
           </h3>
           <div className="h-64">
             {categoryData.length > 0 ? (

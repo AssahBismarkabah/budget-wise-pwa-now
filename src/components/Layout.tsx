@@ -20,6 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import Logo from './Logo';
 import { useTranslation } from 'react-i18next';
+import FeedbackForm from './FeedbackForm';
 
 interface LayoutProps {
   children: ReactNode;
@@ -315,6 +316,10 @@ const Layout = ({ children }: LayoutProps) => {
               <p className="mt-1">{t('version')}</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-auto">
+          <FeedbackForm />
         </div>
       </div>
 

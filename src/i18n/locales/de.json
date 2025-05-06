@@ -1,0 +1,44 @@
+{
+  "daily": "Täglich",
+  "daily_overview": "Tagesübersicht",
+  
+  "welcome_title": "Willkommen bei Budget Wise!",
+  "welcome_description": "Lassen Sie uns Ihnen helfen, Ihre Finanzen besser zu verwalten. Diese kurze Anleitung zeigt Ihnen die Hauptfunktionen.",
+  "transactions_title": "Verfolgen Sie Ihr Geld",
+  "transactions_description": "Fügen Sie Einnahmen und Ausgaben mit den + und - Buttons hinzu. Behalten Sie Ihre täglichen Ausgaben im Auge.",
+  "categories_title": "Organisieren mit Kategorien",
+  "categories_description": "Erstellen Sie Kategorien, um Ihre Transaktionen zu organisieren. Dies hilft Ihnen zu verstehen, wohin Ihr Geld fließt.",
+  "limits_title": "Ausgabenlimits setzen",
+  "limits_description": "Setzen Sie monatliche Limits für verschiedene Kategorien, um Überausgaben zu vermeiden.",
+  "templates_title": "Vorlagen verwenden",
+  "templates_description": "Erstellen Sie Vorlagen für wiederkehrende Transaktionen, um Zeit zu sparen.",
+  "statistics_title": "Statistiken anzeigen",
+  "statistics_description": "Sehen Sie Ihre Ausgabenmuster und verfolgen Sie Ihren Fortschritt im Laufe der Zeit.",
+  
+  "previous": "Zurück",
+  "next": "Weiter",
+  "finish": "Fertig",
+  
+  "feedback": "Feedback",
+  "feedback_title": "Feedback senden",
+  "feedback_description": "Helfen Sie uns, Budget Wise zu verbessern, indem Sie Ihre Gedanken mitteilen.",
+  "name": "Name",
+  "name_placeholder": "Ihr Name",
+  "email": "E-Mail",
+  "email_placeholder": "ihre@email.de",
+  "message": "Nachricht",
+  "message_placeholder": "Teilen Sie uns Ihre Meinung mit...",
+  "submit": "Absenden",
+  "feedback_success_title": "Vielen Dank!",
+  "feedback_success_description": "Ihr Feedback wurde empfangen.",
+  
+  "create_account_title": "Erstellen Sie Ihr erstes Konto",
+  "create_account_description": "Lassen Sie uns mit der Erstellung Ihres ersten Kontos beginnen. Sie können später weitere Konten hinzufügen.",
+  "account_name": "Kontoname",
+  "account_name_placeholder": "Kontoname eingeben",
+  "skip": "Überspringen",
+  "get_started": "Loslegen",
+  
+  "account": "Konto",
+  "logout": "Abmelden"
+} 
