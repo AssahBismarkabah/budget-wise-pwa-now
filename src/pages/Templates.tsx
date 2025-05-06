@@ -29,6 +29,13 @@ import { TransactionType } from '@/services/dbService';
 import { formatCurrency } from '@/lib/formatters';
 import { Plus, X, Edit, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from '@/components/ui/use-toast';
+
+const getCategoryLabel = (t, name) => {
+  const key = `category_${name.toLowerCase()}`;
+  const translated = t(key);
+  return translated !== key ? translated : name;
+};
 
 const Templates = () => {
   const { templates, categories, addTemplate, updateTemplate, deleteTemplate, applyTemplate } = useBudget();
@@ -64,7 +71,11 @@ const Templates = () => {
   
   const handleSave = () => {
     if (!name || !amount || isNaN(Number(amount)) || Number(amount) <= 0 || !categoryId) {
-      alert('Bitte füllen Sie alle Felder korrekt aus.');
+      toast({
+        title: t('error'),
+        description: t('please_fill_all_fields'),
+        variant: 'destructive',
+      });
       return;
     }
     
@@ -157,7 +168,7 @@ const Templates = () => {
                       </div>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {category?.name || t('unknownCategory')}
+                      {category ? getCategoryLabel(t, category.name) : t('unknownCategory')}
                     </div>
                     <div className={`mt-2 font-medium ${template.type === 'income' ? 'text-budget-green' : 'text-budget-red'}`}>
                       {template.type === 'income' ? '+' : '-'} {formatCurrency(template.amount)}
@@ -229,7 +240,7 @@ const Templates = () => {
                       .filter(category => category.type === type)
                       .map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          {category.name}
+                          {getCategoryLabel(t, category.name)}
                         </SelectItem>
                       ))}
                   </SelectContent>

@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { X, Edit, Plus, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from '@/components/ui/use-toast';
 
 const SavingsGoals = () => {
   const { savingsGoals, transactions, addSavingsGoal, updateSavingsGoal, deleteSavingsGoal } = useBudget();
@@ -59,7 +60,11 @@ const SavingsGoals = () => {
   
   const handleAddOrUpdateGoal = () => {
     if (!name || !targetAmount || isNaN(Number(targetAmount)) || Number(targetAmount) <= 0 || !deadline) {
-      alert('Bitte füllen Sie alle Felder korrekt aus.');
+      toast({
+        title: t('error'),
+        description: t('please_fill_all_fields'),
+        variant: 'destructive',
+      });
       return;
     }
     

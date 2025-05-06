@@ -30,6 +30,12 @@ import { formatCurrency, formatDate } from '@/lib/formatters';
 import { Plus, X, Edit, Calendar } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+const getCategoryLabel = (t, name) => {
+  const key = `category_${name.toLowerCase()}`;
+  const translated = t(key);
+  return translated !== key ? translated : name;
+};
+
 const RecurringItems = () => {
   const { recurringItems, categories, addRecurringItem, updateRecurringItem, deleteRecurringItem } = useBudget();
   const { t, i18n } = useTranslation();
@@ -209,7 +215,7 @@ const RecurringItems = () => {
                       <span>{t('next_due_date')}: {formatDate(nextDueDate)}</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {category?.name || 'Unknown Category'} • 
+                      {category ? getCategoryLabel(t, category.name) : t('unknownCategory')} • 
                       {frequencyTranslations[item.frequency]}
                     </div>
                     <div className={`mt-2 font-medium ${item.type === 'income' ? 'text-budget-green' : 'text-budget-red'}`}>
@@ -282,7 +288,7 @@ const RecurringItems = () => {
                       .filter(category => category.type === type)
                       .map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          {category.name}
+                          {getCategoryLabel(t, category.name)}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -313,9 +319,9 @@ const RecurringItems = () => {
                     <SelectValue placeholder={t('frequency_placeholder')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="daily">Täglich</SelectItem>
-                    <SelectItem value="weekly">Wöchentlich</SelectItem>
-                    <SelectItem value="monthly">Monatlich</SelectItem>
+                    <SelectItem value="daily">{t('frequency_daily')}</SelectItem>
+                    <SelectItem value="weekly">{t('frequency_weekly')}</SelectItem>
+                    <SelectItem value="monthly">{t('frequency_monthly')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

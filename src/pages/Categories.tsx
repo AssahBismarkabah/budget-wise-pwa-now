@@ -24,6 +24,14 @@ import {
 import { TransactionType } from '@/services/dbService';
 import { X, Plus, Tag } from 'lucide-react';
 
+const getCategoryLabel = (t, name) => {
+  // Try translation key first
+  const key = `category_${name.toLowerCase()}`;
+  const translated = t(key);
+  // If translation exists, use it; otherwise, use the name as-is
+  return translated !== key ? translated : name;
+};
+
 const Categories = () => {
   const { type } = useParams<{ type: string }>();
   const { categories, addCategory, deleteCategory } = useBudget();
@@ -57,19 +65,6 @@ const Categories = () => {
       deleteCategory(deleteId);
       setDeleteId(null);
     }
-  };
-  
-  const defaultCategoryTranslations: Record<string, string> = {
-    'Bus': t('category_bus'),
-    'Kleidung': t('category_clothing'),
-    'Ausgehen': t('category_going_out'),
-    'Hobby': t('category_hobby'),
-    'Lebensmittel': t('category_food'),
-    'Allgemein': t('category_general'),
-    'Wohnen': t('category_housing'),
-    'Internet': t('category_internet'),
-    'Freizeit': t('category_leisure'),
-    // Add more as needed
   };
   
   return (
@@ -106,7 +101,7 @@ const Categories = () => {
                   <li key={category.id} className="flex items-center justify-between p-4 hover:bg-accent transition-colors">
                     <div className="flex items-center">
                       <div className={`w-3 h-3 rounded-full mr-3 ${categoryType === 'income' ? 'bg-budget-green' : 'bg-budget-red'}`}></div>
-                      <span>{defaultCategoryTranslations[category.name] || category.name}</span>
+                      <span>{getCategoryLabel(t, category.name)}</span>
                     </div>
                     {!category.isDefault && (
                       <Button 

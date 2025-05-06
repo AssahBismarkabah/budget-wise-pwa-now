@@ -32,6 +32,12 @@ import { Progress } from '@/components/ui/progress';
 import { X, Edit, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+const getCategoryLabel = (t, name) => {
+  const key = `category_${name.toLowerCase()}`;
+  const translated = t(key);
+  return translated !== key ? translated : name;
+};
+
 const Limits = () => {
   const { limits, categories, transactions, addLimit, updateLimit, deleteLimit } = useBudget();
   const { t, i18n } = useTranslation();
@@ -146,7 +152,7 @@ const Limits = () => {
                 return (
                   <div key={limit.id} className="bg-card text-card-foreground rounded-lg shadow-md p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium">{category?.name || t('unknown_category')}</h3>
+                      <h3 className="font-medium">{category ? getCategoryLabel(t, category.name) : t('unknown_category')}</h3>
                       <div className="flex items-center space-x-2">
                         <Button 
                           variant="ghost" 
@@ -225,7 +231,7 @@ const Limits = () => {
                   <SelectContent>
                     {expenseCategories.map((category) => (
                       <SelectItem key={category.id} value={category.id}>
-                        {category.name}
+                        {getCategoryLabel(t, category.name)}
                       </SelectItem>
                     ))}
                   </SelectContent>
