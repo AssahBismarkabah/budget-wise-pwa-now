@@ -3,17 +3,17 @@
   "daily_overview": "Tagesübersicht",
   
   "welcome_title": "Willkommen bei Budget Wise!",
-  "welcome_description": "Lassen Sie uns Ihnen helfen, Ihre Finanzen besser zu verwalten. Diese kurze Anleitung zeigt Ihnen die Hauptfunktionen.",
+  "welcome_description": "Ihr persönlicher Finanzbegleiter. Lassen Sie uns Ihnen helfen, die Kontrolle über Ihr Geld zu behalten und Ihre finanziellen Ziele zu erreichen.",
   "transactions_title": "Verfolgen Sie Ihr Geld",
-  "transactions_description": "Fügen Sie Einnahmen und Ausgaben mit den + und - Buttons hinzu. Behalten Sie Ihre täglichen Ausgaben im Auge.",
-  "categories_title": "Mit Kategorien organisieren",
-  "categories_description": "Erstellen Sie Kategorien, um Ihre Transaktionen zu organisieren. So sehen Sie, wohin Ihr Geld fließt.",
-  "limits_title": "Ausgabenlimits setzen",
-  "limits_description": "Setzen Sie monatliche Limits für verschiedene Kategorien, um Überausgaben zu vermeiden.",
-  "templates_title": "Vorlagen nutzen",
-  "templates_description": "Erstellen Sie Vorlagen für wiederkehrende Transaktionen, um Zeit zu sparen.",
-  "statistics_title": "Statistiken anzeigen",
-  "statistics_description": "Sehen Sie Ihre Ausgabenmuster und verfolgen Sie Ihren Fortschritt im Laufe der Zeit.",
+  "transactions_description": "Erfassen Sie mühelos Ihre Einnahmen und Ausgaben. Verschaffen Sie sich einen klaren Überblick über Ihre täglichen Ausgaben und Ihren Geldfluss.",
+  "categories_title": "Intelligente Organisation",
+  "categories_description": "Erstellen Sie individuelle Kategorien für Ihre Ausgaben. Gewinnen Sie Einblicke in Ihre Ausgaben und identifizieren Sie Sparmöglichkeiten.",
+  "limits_title": "Behalten Sie die Kontrolle",
+  "limits_description": "Setzen Sie monatliche Ausgabenlimits für verschiedene Kategorien. Werden Sie benachrichtigt, wenn Sie sich Ihren Limits nähern, um Überausgaben zu vermeiden.",
+  "templates_title": "Sparen Sie Zeit",
+  "templates_description": "Erstellen Sie Vorlagen für Ihre regelmäßigen Transaktionen. Mit einem Klick wiederkehrende Ausgaben und Einnahmen hinzufügen.",
+  "statistics_title": "Verfolgen Sie Ihren Fortschritt",
+  "statistics_description": "Sehen Sie detaillierte Einblicke in Ihre Ausgabenmuster. Treffen Sie fundierte Entscheidungen mit visuellen Berichten und Trends.",
   
   "previous": "Zurück",
   "next": "Weiter",
@@ -152,5 +152,7 @@
   "month_december": "Dezember",
   "select_account": "Konto auswählen",
   "select_account_desc": "Wählen Sie ein bestehendes Konto zum Einloggen oder erstellen Sie ein neues.",
-  "back": "Zurück"
+  "back": "Zurück",
+  "tagline": "Clever haushalten, besser leben.",
+  "loading": "Lädt..."
 } 

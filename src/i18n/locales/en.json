@@ -3,17 +3,17 @@
   "daily_overview": "Daily Overview",
   
   "welcome_title": "Welcome to Budget Wise!",
-  "welcome_description": "Let's help you manage your finances better. This quick guide will show you the main features.",
+  "welcome_description": "Your personal finance companion. Let's help you take control of your money and achieve your financial goals.",
   "transactions_title": "Track Your Money",
-  "transactions_description": "Add income and expenses with the + and - buttons. Keep track of your daily spending.",
-  "categories_title": "Organize with Categories",
-  "categories_description": "Create categories to organize your transactions. This helps you understand where your money goes.",
-  "limits_title": "Set Spending Limits",
-  "limits_description": "Set monthly limits for different categories to avoid overspending.",
-  "templates_title": "Use Templates",
-  "templates_description": "Create templates for recurring transactions to save time.",
-  "statistics_title": "View Statistics",
-  "statistics_description": "See your spending patterns and track your progress over time.",
+  "transactions_description": "Easily record your income and expenses. Get a clear view of your daily spending habits and financial flow.",
+  "categories_title": "Smart Organization",
+  "categories_description": "Create custom categories to organize your spending. Gain insights into where your money goes and identify saving opportunities.",
+  "limits_title": "Stay in Control",
+  "limits_description": "Set monthly spending limits for different categories. Get notified when you're approaching your limits to avoid overspending.",
+  "templates_title": "Save Time",
+  "templates_description": "Create templates for your regular transactions. One click to add recurring expenses and income.",
+  "statistics_title": "Track Progress",
+  "statistics_description": "View detailed insights about your spending patterns. Make informed decisions with visual reports and trends.",
   
   "previous": "Previous",
   "next": "Next",
@@ -153,5 +153,7 @@
   "month_december": "December",
   "select_account": "Select Account",
   "select_account_desc": "Choose an existing account to log in or create a new one.",
-  "back": "Back"
+  "back": "Back",
+  "tagline": "Smarter money, brighter future.",
+  "loading": "Loading..."
 } 

@@ -21,6 +21,7 @@ import { Switch } from '@/components/ui/switch';
 import Logo from './Logo';
 import { useTranslation } from 'react-i18next';
 import FeedbackForm from './FeedbackForm';
+import Spinner from './ui/Spinner';
 
 interface LayoutProps {
   children: ReactNode;
@@ -63,9 +64,9 @@ const Layout = ({ children }: LayoutProps) => {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-medium mb-2">{t('loading')}</h2>
-          <Logo size="large" />
+        <div className="flex flex-col items-center gap-4">
+          <Spinner size={48} />
+          <h2 className="text-xl font-medium text-muted-foreground">{t('loading') || 'Loading...'}</h2>
         </div>
       </div>
     );
