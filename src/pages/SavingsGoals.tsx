@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -200,9 +201,7 @@ const SavingsGoals = () => {
         {/* Add/Edit Goal Dialog */}
         <Dialog open={newGoalOpen} onOpenChange={setNewGoalOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">
-              {editGoalId ? t('savingsGoals.editGoal') : t('savingsGoals.newGoal')}
-            </h3>
+            <DialogTitle>{editGoalId ? t('savingsGoals.editGoal') : t('savingsGoals.newGoal')}</DialogTitle>
             
             <div className="space-y-4">
               <div>

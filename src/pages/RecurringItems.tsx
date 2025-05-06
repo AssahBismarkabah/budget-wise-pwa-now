@@ -13,6 +13,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -234,9 +235,7 @@ const RecurringItems = () => {
         {/* Form Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">
-              {editId ? t('edit_recurring_item') : t('create_recurring_item')}
-            </h3>
+            <DialogTitle>{editId ? t('edit_recurring_item') : t('create_recurring_item')}</DialogTitle>
             
             <div className="space-y-4">
               <div>

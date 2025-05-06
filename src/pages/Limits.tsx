@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -210,9 +211,7 @@ const Limits = () => {
         {/* Add/Edit Limit Dialog */}
         <Dialog open={newLimitOpen} onOpenChange={setNewLimitOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">
-              {editLimitId ? t('edit_limit') : t('new_limit')}
-            </h3>
+            <DialogTitle>{editLimitId ? t('edit_limit') : t('new_limit')}</DialogTitle>
             
             <div className="space-y-4">
               <div>

@@ -17,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -193,6 +193,7 @@ const Settings = () => {
         {/* New Account Dialog */}
         <Dialog open={newAccountOpen} onOpenChange={setNewAccountOpen}>
           <DialogContent>
+            <DialogTitle>Settings</DialogTitle>
             <h3 className="text-lg font-medium mb-4">{t('new_account')}</h3>
             <div className="space-y-4">
               <div>

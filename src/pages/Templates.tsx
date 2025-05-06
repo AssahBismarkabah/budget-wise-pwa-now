@@ -13,6 +13,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -181,9 +182,7 @@ const Templates = () => {
         {/* Template Form Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">
-              {editId ? t('editTemplate') : t('newTemplate')}
-            </h3>
+            <DialogTitle>{editId ? t('editTemplate') : t('newTemplate')}</DialogTitle>
             
             <div className="space-y-4">
               <div>

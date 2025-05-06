@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
 import Layout from '@/components/Layout';
@@ -127,7 +127,7 @@ const Index = () => {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">{t('new_income')}</h3>
+            <DialogTitle>Add Income</DialogTitle>
             <TransactionForm 
               type="income"
               onSave={() => setIncomeDialogOpen(false)}
@@ -143,7 +143,7 @@ const Index = () => {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">{t('new_expense')}</h3>
+            <DialogTitle>Add Expense</DialogTitle>
             <TransactionForm 
               type="expense"
               onSave={() => setExpenseDialogOpen(false)}

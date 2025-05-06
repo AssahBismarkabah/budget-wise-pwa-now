@@ -9,6 +9,7 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -140,6 +141,7 @@ const Categories = () => {
         {/* Add Category Dialog */}
         <Dialog open={newDialogOpen} onOpenChange={setNewDialogOpen}>
           <DialogContent className="sm:max-w-[425px]">
+            <DialogTitle>Edit Category</DialogTitle>
             <h3 className="text-lg font-medium mb-4">
               {categoryType === 'income' ? t('new_income') : t('new_expense')} {t('category')}
             </h3>

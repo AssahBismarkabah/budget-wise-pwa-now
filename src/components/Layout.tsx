@@ -15,7 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useBudget } from '@/contexts/BudgetContext';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import Logo from './Logo';
@@ -163,6 +163,7 @@ const Layout = ({ children }: LayoutProps) => {
               </Button>
             </DialogTrigger>
             <DialogContent className="p-0 dark:bg-gray-800">
+              <DialogTitle>Menu</DialogTitle>
               <div className="p-4">
                 <h3 className="font-medium mb-4 dark:text-white">{t('accounts')}</h3>
                 <div className="space-y-2">
