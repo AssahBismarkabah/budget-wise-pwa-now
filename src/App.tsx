@@ -19,6 +19,7 @@ import Onboarding from "./pages/Onboarding";
 import { useTranslation } from 'react-i18next';
 import { useAccount } from "@/contexts/AccountContext";
 import PWAInstallPrompt from './components/PWAInstallPrompt';
+import FirefoxInstallHint from './components/FirefoxInstallHint';
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => {
                 <Toaster />
                 <Sonner />
                 <PWAInstallPrompt />
+                <FirefoxInstallHint />
                 <Routes>
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route
