@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  css: {
+    postcss: './postcss.config.cjs',
+  },
   plugins: [
     react(),
     mode === 'development' &&
