@@ -85,7 +85,7 @@ const Layout = ({ children }: LayoutProps) => {
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setSidebarOpen(true)}
-                className="text-primary-foreground dark:text-white hover:bg-accent dark:hover:bg-gray-700 mr-2"
+                className="text-primary hover:bg-accent dark:text-white dark:hover:bg-gray-700 mr-2"
               >
                 <Menu className="h-5 w-5" />
               </Button>
