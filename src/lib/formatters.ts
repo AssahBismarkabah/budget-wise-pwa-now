@@ -1,3 +1,4 @@
+import { TFunction } from 'i18next';
 
 /**
  * Format a number as a currency string (€)
@@ -36,14 +37,23 @@ export const getLastDayOfMonth = (): string => {
 /**
  * Format a month number to its name
  */
-export const getMonthName = (month: number): string => {
-  const months = [
-    'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 
-    'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+export function getMonthName(index: number, t: TFunction): string {
+  const keys = [
+    'month_january',
+    'month_february',
+    'month_march',
+    'month_april',
+    'month_may',
+    'month_june',
+    'month_july',
+    'month_august',
+    'month_september',
+    'month_october',
+    'month_november',
+    'month_december',
   ];
-  
-  return months[month];
-};
+  return t(keys[index]);
+}
 
 /**
  * Group transactions by date

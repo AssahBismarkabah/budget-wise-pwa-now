@@ -1,13 +1,12 @@
-
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
-import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Globe } from 'lucide-react';
+import { Globe, Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -26,23 +25,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAccount } from '@/contexts/AccountContext';
+import Spinner from '@/components/ui/Spinner';
 
 const Settings = () => {
-  const { resetApp, addAccount } = useBudget();
-  const { language, setLanguage, t } = useLanguage();
+  const { resetApp, addAccount, accounts, deleteAccount } = useBudget();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
+  const { logout } = useAccount();
   
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newAccountOpen, setNewAccountOpen] = useState(false);
   const [accountName, setAccountName] = useState('');
   const [offlineMode, setOfflineMode] = useState(false);
+  const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   
   const handleResetConfirm = async () => {
+    setLoading(true);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1800)); // 1.8s delay
       await resetApp();
       setResetDialogOpen(false);
     } catch (error) {
       console.error('Failed to reset app:', error);
     }
+    setLoading(false);
   };
   
   const handleAddAccount = async () => {
@@ -63,6 +71,17 @@ const Settings = () => {
       console.error('Failed to add account:', error);
     }
   };
+
+  const handleDeleteAccount = async () => {
+    if (deleteAccountId) {
+      try {
+        await deleteAccount(deleteAccountId);
+        setDeleteAccountId(null);
+      } catch (error) {
+        console.error('Failed to delete account:', error);
+      }
+    }
+  };
   
   const handleFeedbackSubmit = () => {
     toast({
@@ -71,19 +90,46 @@ const Settings = () => {
     });
   };
   
+  const handleLogout = async () => {
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1800)); // 1.8s delay
+    logout();
+    setLoading(false);
+  };
+  
   return (
     <Layout>
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <Spinner size={48} />
+        </div>
+      )}
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
         
         {/* Account Management */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('accounts')}</h2>
-          <Button onClick={() => setNewAccountOpen(true)}>{t('new_account')}</Button>
+          <div className="space-y-4">
+            {accounts.map((account) => (
+              <div key={account.id} className="flex items-center justify-between p-2 bg-secondary rounded-md">
+                <span>{account.name}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setDeleteAccountId(account.id)}
+                  className="h-8 w-8 text-destructive hover:text-destructive/90"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+            <Button onClick={() => setNewAccountOpen(true)}>{t('new_account')}</Button>
+          </div>
         </div>
         
         {/* App Settings */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('app_settings')}</h2>
           
           {/* Language Selector */}
@@ -99,10 +145,10 @@ const Settings = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setLanguage('de')}>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage('de')}>
                   {t('german')}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLanguage('en')}>
+                <DropdownMenuItem onClick={() => i18n.changeLanguage('en')}>
                   {t('english')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -134,7 +180,7 @@ const Settings = () => {
         </div>
         
         {/* Feedback Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('feedback')}</h2>
           <div className="space-y-4">
             <p className="text-sm">
@@ -149,7 +195,7 @@ const Settings = () => {
         </div>
         
         {/* About Section */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h2 className="text-lg font-medium mb-4">{t('about')}</h2>
           <div className="space-y-2">
             <p>
@@ -193,6 +239,7 @@ const Settings = () => {
         {/* New Account Dialog */}
         <Dialog open={newAccountOpen} onOpenChange={setNewAccountOpen}>
           <DialogContent>
+            <DialogTitle>Settings</DialogTitle>
             <h3 className="text-lg font-medium mb-4">{t('new_account')}</h3>
             <div className="space-y-4">
               <div>
@@ -224,6 +271,39 @@ const Settings = () => {
             </div>
           </DialogContent>
         </Dialog>
+        
+        {/* Delete Account Confirmation Dialog */}
+        <AlertDialog open={!!deleteAccountId} onOpenChange={() => setDeleteAccountId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('delete_account')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('delete_account_warning')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={handleDeleteAccount}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                {t('delete')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+        
+        {/* Add this section */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-medium">{t('account')}</h2>
+          <Button
+            variant="destructive"
+            onClick={handleLogout}
+            className="w-full"
+          >
+            {t('logout')}
+          </Button>
+        </div>
       </div>
     </Layout>
   );

@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
@@ -14,6 +13,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -28,9 +28,19 @@ import {
 import { TransactionType } from '@/services/dbService';
 import { formatCurrency } from '@/lib/formatters';
 import { Plus, X, Edit, ArrowRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { toast } from '@/components/ui/use-toast';
+
+const getCategoryLabel = (t, name) => {
+  const key = `category_${name.toLowerCase()}`;
+  const translated = t(key);
+  return translated !== key ? translated : name;
+};
 
 const Templates = () => {
   const { templates, categories, addTemplate, updateTemplate, deleteTemplate, applyTemplate } = useBudget();
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
   
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -61,7 +71,11 @@ const Templates = () => {
   
   const handleSave = () => {
     if (!name || !amount || isNaN(Number(amount)) || Number(amount) <= 0 || !categoryId) {
-      alert('Bitte füllen Sie alle Felder korrekt aus.');
+      toast({
+        title: t('error'),
+        description: t('please_fill_all_fields'),
+        variant: 'destructive',
+      });
       return;
     }
     
@@ -98,23 +112,23 @@ const Templates = () => {
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Vorlagen</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('templates')}</h1>
         
         {templates.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-muted-foreground">Noch keine Vorlagen vorhanden</p>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-8 text-center">
+            <p className="text-muted-foreground">{t('noTemplates')}</p>
             <Button 
               onClick={() => handleOpenDialog()}
               className="mt-4"
             >
               <Plus className="mr-2 h-4 w-4" />
-              Vorlage erstellen
+              {t('createTemplate')}
             </Button>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md mb-6">
+          <div className="bg-card text-card-foreground rounded-lg shadow-md mb-6">
             <div className="p-4 border-b">
-              <h3 className="font-medium">Alle Vorlagen</h3>
+              <h3 className="font-medium">{t('allTemplates')}</h3>
             </div>
             
             <div className="divide-y">
@@ -133,7 +147,7 @@ const Templates = () => {
                           onClick={() => applyTemplate(template.id)}
                         >
                           <ArrowRight className="h-4 w-4" />
-                          <span>Anwenden</span>
+                          <span>{t('apply')}</span>
                         </Button>
                         <Button 
                           variant="ghost" 
@@ -154,7 +168,7 @@ const Templates = () => {
                       </div>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {category?.name || 'Unknown Category'}
+                      {category ? getCategoryLabel(t, category.name) : t('unknownCategory')}
                     </div>
                     <div className={`mt-2 font-medium ${template.type === 'income' ? 'text-budget-green' : 'text-budget-red'}`}>
                       {template.type === 'income' ? '+' : '-'} {formatCurrency(template.amount)}
@@ -179,26 +193,24 @@ const Templates = () => {
         {/* Template Form Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent>
-            <h3 className="text-lg font-medium mb-4">
-              {editId ? 'Vorlage bearbeiten' : 'Neue Vorlage'}
-            </h3>
+            <DialogTitle>{editId ? t('editTemplate') : t('newTemplate')}</DialogTitle>
             
             <div className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium mb-1">
-                  Name
+                  {t('name')}
                 </label>
                 <Input
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="z.B. Miete, Gehalt, etc."
+                  placeholder={t('examplePlaceholder')}
                 />
               </div>
               
               <div>
                 <label htmlFor="type" className="block text-sm font-medium mb-1">
-                  Typ
+                  {t('type')}
                 </label>
                 <Select value={type} onValueChange={(value: TransactionType) => {
                   setType(value);
@@ -206,29 +218,29 @@ const Templates = () => {
                   setCategoryId('');
                 }}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Typ auswählen" />
+                    <SelectValue placeholder={t('selectType')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="income">Einnahme</SelectItem>
-                    <SelectItem value="expense">Ausgabe</SelectItem>
+                    <SelectItem value="income">{t('income')}</SelectItem>
+                    <SelectItem value="expense">{t('expense')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               
               <div>
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
-                  Kategorie
+                  {t('category')}
                 </label>
                 <Select value={categoryId} onValueChange={setCategoryId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Kategorie auswählen" />
+                    <SelectValue placeholder={t('selectCategory')} />
                   </SelectTrigger>
                   <SelectContent>
                     {categories
                       .filter(category => category.type === type)
                       .map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          {category.name}
+                          {getCategoryLabel(t, category.name)}
                         </SelectItem>
                       ))}
                   </SelectContent>
@@ -237,7 +249,7 @@ const Templates = () => {
               
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium mb-1">
-                  Betrag (€)
+                  {t('amount')} (€)
                 </label>
                 <Input
                   id="amount"
@@ -256,13 +268,13 @@ const Templates = () => {
                   variant="outline" 
                   onClick={() => setDialogOpen(false)}
                 >
-                  Abbrechen
+                  {t('cancel')}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleSave}
                 >
-                  {editId ? 'Aktualisieren' : 'Speichern'}
+                  {editId ? t('update') : t('save')}
                 </Button>
               </div>
             </div>
@@ -273,14 +285,14 @@ const Templates = () => {
         <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Vorlage löschen</AlertDialogTitle>
+              <AlertDialogTitle>{t('deleteTemplate')}</AlertDialogTitle>
               <AlertDialogDescription>
-                Sind Sie sicher, dass Sie diese Vorlage löschen möchten?
+                {t('areYouSureDelete')}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDeleteConfirm}>Löschen</AlertDialogAction>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm}>{t('delete')}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

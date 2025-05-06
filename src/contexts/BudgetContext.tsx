@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { 
   Account, 
@@ -24,6 +23,8 @@ interface BudgetContextType {
   accounts: Account[];
   switchAccount: (accountId: string) => void;
   addAccount: (name: string) => Promise<void>;
+  deleteAccount: (accountId: string) => Promise<void>;
+  updateAccount: (account: Account) => Promise<void>;
   
   // Transactions
   transactions: Transaction[];
@@ -278,6 +279,106 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
       toast({
         title: 'Error',
         description: 'Failed to create account',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const deleteAccount = async (accountId: string) => {
+    // Don't allow deleting the last account
+    if (accounts.length <= 1) {
+      toast({
+        title: 'Error',
+        description: 'Cannot delete the last account',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Delete all data associated with the account
+      const [
+        accountTransactions,
+        accountCategories,
+        accountLimits,
+        accountTemplates,
+        accountRecurringItems,
+        accountSavingsGoals,
+      ] = await Promise.all([
+        getAll<Transaction>('transactions'),
+        getAll<Category>('categories'),
+        getAll<Limit>('limits'),
+        getAll<Template>('templates'),
+        getAll<RecurringItem>('recurringItems'),
+        getAll<SavingsGoal>('savingsGoals'),
+      ]);
+
+      // Delete all related data
+      await Promise.all([
+        ...accountTransactions
+          .filter(t => t.accountId === accountId)
+          .map(t => remove('transactions', t.id)),
+        ...accountCategories
+          .filter(c => c.accountId === accountId)
+          .map(c => remove('categories', c.id)),
+        ...accountLimits
+          .filter(l => l.accountId === accountId)
+          .map(l => remove('limits', l.id)),
+        ...accountTemplates
+          .filter(t => t.accountId === accountId)
+          .map(t => remove('templates', t.id)),
+        ...accountRecurringItems
+          .filter(r => r.accountId === accountId)
+          .map(r => remove('recurringItems', r.id)),
+        ...accountSavingsGoals
+          .filter(g => g.accountId === accountId)
+          .map(g => remove('savingsGoals', g.id)),
+      ]);
+
+      // Delete the account itself
+      await remove('accounts', accountId);
+      
+      // Update state
+      setAccounts(accounts.filter(a => a.id !== accountId));
+      
+      // If the deleted account was the current one, switch to another account
+      if (currentAccount?.id === accountId) {
+        const remainingAccounts = accounts.filter(a => a.id !== accountId);
+        if (remainingAccounts.length > 0) {
+          setCurrentAccount(remainingAccounts[0]);
+        }
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Account deleted successfully',
+      });
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete account',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const updateAccount = async (account: Account) => {
+    try {
+      await update('accounts', account);
+      setAccounts(accounts.map(a => (a.id === account.id ? account : a)));
+      if (currentAccount?.id === account.id) {
+        setCurrentAccount(account);
+      }
+      toast({
+        title: 'Profile updated',
+        description: 'Your profile has been updated.',
+      });
+    } catch (error) {
+      console.error('Failed to update account:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update profile',
         variant: 'destructive',
       });
     }
@@ -727,6 +828,8 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
     accounts,
     switchAccount,
     addAccount,
+    deleteAccount,
+    updateAccount,
     transactions,
     addTransaction,
     updateTransaction,

@@ -1,15 +1,18 @@
-
 import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
 import { formatCurrency, getMonthName } from '@/lib/formatters';
 import { BarChart, PieChart, Bar, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 const Statistics = () => {
   const { transactions, categories } = useBudget();
-  const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  const { t, i18n } = useTranslation();
+  const language = i18n.language;
+  const [period, setPeriod] = useState<'daily' | 'monthly' | 'yearly'>('monthly');
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth());
+  const [day, setDay] = useState(new Date().getDate());
   const [chartData, setChartData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
   
@@ -28,10 +31,45 @@ const Statistics = () => {
   useEffect(() => {
     prepareChartData();
     prepareCategoryData();
-  }, [transactions, period, year, month]);
+  }, [transactions, period, year, month, day]);
   
   const prepareChartData = () => {
-    if (period === 'monthly') {
+    if (period === 'daily') {
+      // Filter transactions for the selected day
+      const dayTransactions = transactions.filter(t => {
+        const date = new Date(t.date);
+        return date.getFullYear() === year && 
+               date.getMonth() === month && 
+               date.getDate() === day;
+      });
+      
+      // Group by hour
+      const hourlyData = Array(24).fill(0).map((_, index) => {
+        const hourTransactions = dayTransactions.filter(t => {
+          const date = new Date(t.date);
+          return date.getHours() === index;
+        });
+        
+        const income = hourTransactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const expense = hourTransactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+        
+        const balance = income - expense;
+        
+        return {
+          name: `${index}:00`,
+          income,
+          expense,
+          balance,
+        };
+      });
+      
+      setChartData(hourlyData);
+    } else if (period === 'monthly') {
       // Filter transactions for the selected year
       const yearTransactions = transactions.filter(t => {
         const date = new Date(t.date);
@@ -56,7 +94,7 @@ const Statistics = () => {
         const balance = income - expense;
         
         return {
-          name: getMonthName(index),
+          name: getMonthName(index, t),
           income,
           expense,
           balance,
@@ -98,10 +136,16 @@ const Statistics = () => {
   };
   
   const prepareCategoryData = () => {
-    // Filter transactions based on period
     let filteredTransactions;
     
-    if (period === 'monthly') {
+    if (period === 'daily') {
+      filteredTransactions = transactions.filter(t => {
+        const date = new Date(t.date);
+        return date.getFullYear() === year && 
+               date.getMonth() === month && 
+               date.getDate() === day;
+      });
+    } else if (period === 'monthly') {
       filteredTransactions = transactions.filter(t => {
         const date = new Date(t.date);
         return date.getFullYear() === year && date.getMonth() === month;
@@ -146,18 +190,19 @@ const Statistics = () => {
   return (
     <Layout>
       <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Statistik</h1>
+        <h1 className="text-2xl font-bold mb-6">{t('statistics')}</h1>
         
         {/* Period Selector */}
         <div className="flex gap-4 mb-6 items-center">
           <div>
             <select
               value={period}
-              onChange={(e) => setPeriod(e.target.value as 'monthly' | 'yearly')}
+              onChange={(e) => setPeriod(e.target.value as 'daily' | 'monthly' | 'yearly')}
               className="border rounded p-2"
             >
-              <option value="monthly">Monatlich</option>
-              <option value="yearly">Jährlich</option>
+              <option value="daily">{t('daily')}</option>
+              <option value="monthly">{t('monthly')}</option>
+              <option value="yearly">{t('yearly')}</option>
             </select>
           </div>
           
@@ -173,7 +218,7 @@ const Statistics = () => {
             </select>
           </div>
           
-          {period === 'monthly' && (
+          {period !== 'yearly' && (
             <div>
               <select
                 value={month}
@@ -181,7 +226,24 @@ const Statistics = () => {
                 className="border rounded p-2"
               >
                 {Array.from({ length: 12 }, (_, i) => i).map((m) => (
-                  <option key={m} value={m}>{getMonthName(m)}</option>
+                  <option key={m} value={m}>{getMonthName(m, t)}</option>
+                ))}
+              </select>
+            </div>
+          )}
+          
+          {period === 'daily' && (
+            <div>
+              <select
+                value={day}
+                onChange={(e) => setDay(Number(e.target.value))}
+                className="border rounded p-2"
+              >
+                {Array.from(
+                  { length: new Date(year, month + 1, 0).getDate() }, 
+                  (_, i) => i + 1
+                ).map((d) => (
+                  <option key={d} value={d}>{d}</option>
                 ))}
               </select>
             </div>
@@ -190,24 +252,24 @@ const Statistics = () => {
         
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">Einnahmen</h3>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+            <h3 className="text-sm text-muted-foreground mb-1">{t('income_categories')}</h3>
             <p className="text-xl font-medium text-budget-green">{formatCurrency(totalIncome)}</p>
             <p className="text-sm text-muted-foreground mt-2">
               Ø {formatCurrency(avgIncome)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
             </p>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">Ausgaben</h3>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+            <h3 className="text-sm text-muted-foreground mb-1">{t('expense_categories')}</h3>
             <p className="text-xl font-medium text-budget-red">{formatCurrency(totalExpense)}</p>
             <p className="text-sm text-muted-foreground mt-2">
               Ø {formatCurrency(avgExpense)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
             </p>
           </div>
           
-          <div className="bg-white rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">Balance</h3>
+          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+            <h3 className="text-sm text-muted-foreground mb-1">{t('balance')}</h3>
             <p className={`text-xl font-medium ${totalBalance >= 0 ? 'text-budget-green' : 'text-budget-red'}`}>
               {formatCurrency(totalBalance)}
             </p>
@@ -218,9 +280,9 @@ const Statistics = () => {
         </div>
         
         {/* Bar Chart */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h3 className="text-lg font-medium mb-4">
-            {period === 'monthly' ? 'Monatsübersicht ' + year : 'Jahresübersicht'}
+            {period === 'monthly' ? `${t('monthly_overview')} ${year}` : period === 'daily' ? `${t('daily_overview')} ${year}-${month}-${day}` : t('yearly_overview')}
           </h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -233,18 +295,18 @@ const Statistics = () => {
                 <YAxis />
                 <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                 <Legend />
-                <Bar dataKey="income" name="Einnahmen" fill={COLORS.income} />
-                <Bar dataKey="expense" name="Ausgaben" fill={COLORS.expense} />
-                <Bar dataKey="balance" name="Saldo" fill={COLORS.balance} />
+                <Bar dataKey="income" name={t('income_categories')} fill={COLORS.income} />
+                <Bar dataKey="expense" name={t('expense_categories')} fill={COLORS.expense} />
+                <Bar dataKey="balance" name={t('balance')} fill={COLORS.balance} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
         
         {/* Pie Chart for Category Distribution */}
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
           <h3 className="text-lg font-medium mb-4">
-            Ausgabenverteilung {period === 'monthly' ? `(${getMonthName(month)} ${year})` : `(${year})`}
+            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month, t)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
           </h3>
           <div className="h-64">
             {categoryData.length > 0 ? (
@@ -270,7 +332,7 @@ const Statistics = () => {
               </ResponsiveContainer>
             ) : (
               <div className="h-full flex items-center justify-center">
-                <p className="text-muted-foreground">Keine Daten vorhanden</p>
+                <p className="text-muted-foreground">{t('no_data_available')}</p>
               </div>
             )}
           </div>
