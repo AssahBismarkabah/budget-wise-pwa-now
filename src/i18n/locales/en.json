@@ -150,5 +150,8 @@
   "month_september": "September",
   "month_october": "October",
   "month_november": "November",
-  "month_december": "December"
+  "month_december": "December",
+  "select_account": "Select Account",
+  "select_account_desc": "Choose an existing account to log in or create a new one.",
+  "back": "Back"
 } 

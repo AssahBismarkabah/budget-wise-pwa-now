@@ -35,9 +35,9 @@ const TransactionItem = ({ transaction }: TransactionItemProps) => {
   const formattedDate = new Date(transaction.date).toLocaleDateString(
     { de: 'de-DE', en: 'en-US' }[language],
     {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
     }
   );
 

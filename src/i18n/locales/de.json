@@ -149,5 +149,8 @@
   "month_september": "September",
   "month_october": "Oktober",
   "month_november": "November",
-  "month_december": "Dezember"
+  "month_december": "Dezember",
+  "select_account": "Konto auswählen",
+  "select_account_desc": "Wählen Sie ein bestehendes Konto zum Einloggen oder erstellen Sie ein neues.",
+  "back": "Zurück"
 } 

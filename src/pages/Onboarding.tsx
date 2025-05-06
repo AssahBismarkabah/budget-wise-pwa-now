@@ -11,11 +11,103 @@ import Logo from '@/components/Logo';
 const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [accountName, setAccountName] = useState('');
+  const [creatingNew, setCreatingNew] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { addAccount } = useBudget();
+  const { accounts, addAccount, switchAccount } = useBudget();
   const { setIsAuthenticated } = useAccount();
 
+  // If accounts exist, show account selection first
+  const hasAccounts = accounts && accounts.length > 0;
+
+  // Main account id for tying new accounts
+  const mainAccountId = hasAccounts ? accounts[0].id : null;
+
+  // Step 0: Account selection or creation
+  if (step === 0 && hasAccounts && !creatingNew) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <Logo size="large" />
+            <h2 className="text-2xl font-bold mt-4">{t('select_account')}</h2>
+            <p className="text-muted-foreground mb-4">{t('select_account_desc')}</p>
+          </div>
+          <div className="space-y-4">
+            {accounts.map((acc) => (
+              <Button
+                key={acc.id}
+                className="w-full justify-start"
+                variant="outline"
+                onClick={() => {
+                  switchAccount(acc.id);
+                  localStorage.setItem('onboardingComplete', 'true');
+                  setIsAuthenticated(true);
+                  navigate('/');
+                }}
+              >
+                {acc.name}
+              </Button>
+            ))}
+            <Button
+              className="w-full mt-2"
+              onClick={() => setCreatingNew(true)}
+            >
+              {t('create_account_title')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 0: Create new account (if no accounts or user chose to create new)
+  if (step === 0 && (!hasAccounts || creatingNew)) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <Logo size="large" />
+            <h2 className="text-2xl font-bold mt-4">{t('create_account_title')}</h2>
+            <p className="text-muted-foreground mb-4">{t('create_account_description')}</p>
+          </div>
+          <div className="space-y-4">
+            <Label htmlFor="accountName">{t('account_name')}</Label>
+            <Input
+              id="accountName"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              placeholder={t('account_name_placeholder')}
+            />
+            <Button
+              className="w-full mt-2"
+              onClick={async () => {
+                // Tie new account to main account if exists
+                await addAccount(accountName);
+                setAccountName('');
+                setCreatingNew(false);
+                setStep(1);
+              }}
+              disabled={!accountName.trim()}
+            >
+              {t('next')}
+            </Button>
+            {hasAccounts && (
+              <Button
+                variant="ghost"
+                className="w-full"
+                onClick={() => setCreatingNew(false)}
+              >
+                {t('back')}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Rest of onboarding steps (feature tour)
   const steps = [
     {
       title: t('welcome_title'),
@@ -49,30 +141,14 @@ const Onboarding = () => {
     }
   ];
 
-  const handleNext = async () => {
-    if (step === 1 && accountName) {
-      // Create the initial account
-      await addAccount(accountName);
-    }
-
-    if (step < steps.length - 1) {
+  const handleNext = () => {
+    if (step < steps.length) {
       setStep(step + 1);
     } else {
-      // Mark onboarding as complete and navigate to the main app
       localStorage.setItem('onboardingComplete', 'true');
       setIsAuthenticated(true);
       navigate('/');
     }
-  };
-
-  const handleSkip = () => {
-    if (step === 1 && accountName) {
-      // Create the initial account even if skipping
-      addAccount(accountName);
-    }
-    localStorage.setItem('onboardingComplete', 'true');
-    setIsAuthenticated(true);
-    navigate('/');
   };
 
   return (
@@ -84,7 +160,6 @@ const Onboarding = () => {
           style={{ width: `${((step + 1) / steps.length) * 100}%` }}
         />
       </div>
-
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center p-6">
         <div className="max-w-md w-full space-y-8">
@@ -92,41 +167,14 @@ const Onboarding = () => {
           <div className="text-center">
             <Logo size="large" />
           </div>
-
           {/* Step content */}
           <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold">{t(steps[step].title)}</h2>
-            <p className="text-muted-foreground">{t(steps[step].description)}</p>
+            <h2 className="text-2xl font-bold">{t(steps[step]?.title)}</h2>
+            <p className="text-muted-foreground">{t(steps[step]?.description)}</p>
           </div>
-
-          {/* Account creation form */}
-          {step === 1 && (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="accountName">{t('account_name')}</Label>
-                <Input
-                  id="accountName"
-                  value={accountName}
-                  onChange={(e) => setAccountName(e.target.value)}
-                  placeholder={t('account_name_placeholder')}
-                />
-              </div>
-            </div>
-          )}
-
           {/* Navigation buttons */}
-          <div className="flex justify-between pt-6">
-            <Button
-              variant="ghost"
-              onClick={handleSkip}
-              className={step === 0 ? 'invisible' : ''}
-            >
-              {t('skip')}
-            </Button>
-            <Button
-              onClick={handleNext}
-              disabled={step === 1 && !accountName}
-            >
+          <div className="flex justify-end pt-6">
+            <Button onClick={handleNext}>
               {step === steps.length - 1 ? t('get_started') : t('next')}
             </Button>
           </div>
