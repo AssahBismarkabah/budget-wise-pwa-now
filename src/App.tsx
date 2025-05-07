@@ -20,6 +20,8 @@ import { useTranslation } from 'react-i18next';
 import { useAccount } from "@/contexts/AccountContext";
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import FirefoxInstallHint from './components/FirefoxInstallHint';
+import { QRCodeCanvas } from 'qrcode.react';
+import { useEffect, useState } from 'react';
 
 const queryClient = new QueryClient();
 
@@ -29,9 +31,61 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/onboarding" replace />;
 };
 
+const DesktopOverlay = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth > 900);
+    };
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  if (!isDesktop) return null;
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100vw',
+      height: '100vh',
+      background: 'rgba(0,0,0,0.85)',
+      zIndex: 9999,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff',
+      textAlign: 'center',
+    }}>
+      <h2 style={{ fontSize: 32, marginBottom: 16 }}>Open on your mobile device</h2>
+      <p style={{ fontSize: 18, marginBottom: 24 }}>Scan this QR code to open and install the app on your phone or tablet.</p>
+      <QRCodeCanvas value={window.location.href} size={200} bgColor="#fff" fgColor="#1E90FF" />
+      <p style={{ marginTop: 24, fontSize: 16 }}>Or visit this URL on your mobile browser:<br /><span style={{ color: '#1E90FF' }}>{window.location.href}</span></p>
+    </div>
+  );
+};
+
 const App = () => {
   const { t, i18n } = useTranslation();
   const language = i18n.language;
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth > 900);
+    };
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
+
+  if (isDesktop) {
+    return <DesktopOverlay />;
+  }
 
   return (
     <QueryClientProvider client={queryClient}>

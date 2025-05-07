@@ -168,5 +168,13 @@
   "sending": "Sending...",
   "savingsGoals.newGoal": "New Savings Goal",
   "savingsGoals.namePlaceholder": "Enter a name for your goal",
-  "savingsGoals.save": "Save Goal"
+  "savingsGoals.save": "Save Goal",
+  "savingsGoals.noGoals": "No savings goals yet",
+  "savingsGoals.addGoal": "Add Savings Goal",
+  "savingsGoals.deleteConfirmTitle": "Delete Savings Goal?",
+  "savingsGoals.deleteConfirmDescription": "Are you sure you want to delete this savings goal? This action cannot be undone.",
+  "savingsGoals.deleteConfirmDelete": "Delete",
+  "savingsGoals.deleteConfirmCancel": "Cancel",
+  "delete_limit": "Delete Limit?",
+  "are_you_sure_delete": "Are you sure you want to delete this limit? This action cannot be undone."
 } 
