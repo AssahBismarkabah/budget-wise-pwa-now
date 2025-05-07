@@ -155,5 +155,18 @@
   "select_account_desc": "Choose an existing account to log in or create a new one.",
   "back": "Back",
   "tagline": "Smarter money, brighter future.",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "data_management": "Data Management",
+  "export_data": "Export Data",
+  "export_data_description": "Export your transactions, categories, and settings to a file that you can import on another device.",
+  "import_data": "Import Data",
+  "import_data_description": "Import previously exported data from another device. This will add the imported data to your current account.",
+  "feedback_sent": "Feedback Sent",
+  "feedback_sent_description": "Thank you for your feedback! It will be sent when you're online.",
+  "feedback_error": "Failed to submit feedback. It will be saved and sent when you're online.",
+  "please_enter_feedback": "Please enter your feedback",
+  "sending": "Sending...",
+  "savingsGoals.newGoal": "New Savings Goal",
+  "savingsGoals.namePlaceholder": "Enter a name for your goal",
+  "savingsGoals.save": "Save Goal"
 } 

@@ -212,39 +212,39 @@ const Templates = () => {
                 <label htmlFor="type" className="block text-sm font-medium mb-1">
                   {t('type')}
                 </label>
-                <Select value={type} onValueChange={(value: TransactionType) => {
-                  setType(value);
-                  // Reset category when changing type
-                  setCategoryId('');
-                }}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('selectType')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="income">{t('income')}</SelectItem>
-                    <SelectItem value="expense">{t('expense')}</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select
+                  id="type"
+                  value={type}
+                  onChange={e => {
+                    setType(e.target.value as TransactionType);
+                    setCategoryId('');
+                  }}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="income">{t('income')}</option>
+                  <option value="expense">{t('expense')}</option>
+                </select>
               </div>
               
               <div>
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
                   {t('category')}
                 </label>
-                <Select value={categoryId} onValueChange={setCategoryId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('selectCategory')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories
-                      .filter(category => category.type === type)
-                      .map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {getCategoryLabel(t, category.name)}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  id="category"
+                  value={categoryId}
+                  onChange={e => setCategoryId(e.target.value)}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="" disabled>{t('selectCategory')}</option>
+                  {categories
+                    .filter(category => category.type === type)
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {getCategoryLabel(t, category.name)}
+                      </option>
+                    ))}
+                </select>
               </div>
               
               <div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
 import { useTranslation } from 'react-i18next';
@@ -27,9 +27,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAccount } from '@/contexts/AccountContext';
 import Spinner from '@/components/ui/Spinner';
+import { useFeedbackForm } from '@/services/feedbackService';
 
 const Settings = () => {
-  const { resetApp, addAccount, accounts, deleteAccount } = useBudget();
+  const { resetApp, addAccount, accounts, deleteAccount, exportAccountData, importAccountData } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
   const { logout } = useAccount();
@@ -40,6 +41,9 @@ const Settings = () => {
   const [offlineMode, setOfflineMode] = useState(false);
   const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const { submitFeedback, state, ValidationError } = useFeedbackForm();
   
   const handleResetConfirm = async () => {
     setLoading(true);
@@ -83,11 +87,31 @@ const Settings = () => {
     }
   };
   
-  const handleFeedbackSubmit = () => {
-    toast({
-      title: t('feedback_sent'),
-      description: t('feedback_sent'),
-    });
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: t('error'),
+        description: t('please_enter_feedback'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await submitFeedback(feedbackMessage);
+      setFeedbackMessage('');
+      toast({
+        title: t('feedback_sent'),
+        description: t('feedback_sent_description'),
+      });
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      toast({
+        title: t('error'),
+        description: t('feedback_error'),
+        variant: 'destructive',
+      });
+    }
   };
   
   const handleLogout = async () => {
@@ -95,6 +119,21 @@ const Settings = () => {
     await new Promise((resolve) => setTimeout(resolve, 1800)); // 1.8s delay
     logout();
     setLoading(false);
+  };
+
+  const handleExport = () => {
+    exportAccountData();
+  };
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      importAccountData(file);
+    }
+    // Reset the input value so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
   
   return (
@@ -106,6 +145,45 @@ const Settings = () => {
       )}
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
+        
+        {/* Data Management Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">{t('data_management')}</h2>
+          <div className="space-y-4">
+            <div className="flex flex-col space-y-2">
+              <Button 
+                onClick={handleExport}
+                className="w-full"
+              >
+                {t('export_data')}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('export_data_description')}
+              </p>
+            </div>
+            
+            <div className="flex flex-col space-y-2">
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                ref={fileInputRef}
+                className="hidden"
+                id="import-file"
+              />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                variant="outline"
+                className="w-full"
+              >
+                {t('import_data')}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('import_data_description')}
+              </p>
+            </div>
+          </div>
+        </div>
         
         {/* Account Management */}
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
@@ -187,10 +265,26 @@ const Settings = () => {
               {t('feedback_desc')}
             </p>
             <textarea 
-              className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue"
+              className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue text-foreground bg-background"
               placeholder={t('your_feedback')}
+              value={feedbackMessage}
+              onChange={(e) => setFeedbackMessage(e.target.value)}
+              disabled={state.submitting}
+              name="message"
+              id="message"
             />
-            <Button onClick={handleFeedbackSubmit}>{t('send_feedback')}</Button>
+            <ValidationError 
+              prefix="Message" 
+              field="message"
+              errors={state.errors}
+              className="text-destructive text-sm"
+            />
+            <Button 
+              onClick={handleFeedbackSubmit}
+              disabled={state.submitting}
+            >
+              {state.submitting ? t('sending') : t('send_feedback')}
+            </Button>
           </div>
         </div>
         

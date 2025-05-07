@@ -16,6 +16,7 @@ import {
   DEFAULT_ACCOUNT_ID
 } from '@/services/dbService';
 import { toast } from '@/components/ui/use-toast';
+import { ExportData, exportData, importData } from '@/services/exportService';
 
 interface BudgetContextType {
   // Accounts
@@ -65,6 +66,10 @@ interface BudgetContextType {
   // App Functions
   resetApp: () => Promise<void>;
   isLoading: boolean;
+  
+  // Export/Import
+  exportAccountData: () => void;
+  importAccountData: (file: File) => Promise<void>;
 }
 
 const BudgetContext = createContext<BudgetContextType | undefined>(undefined);
@@ -823,6 +828,132 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const exportAccountData = () => {
+    if (!currentAccount) {
+      toast({
+        title: 'Error',
+        description: 'No account selected',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const data: ExportData = {
+      transactions,
+      categories,
+      limits,
+      templates,
+      recurringItems,
+      savingsGoals,
+      exportDate: new Date().toISOString(),
+      version: '1.0.0'
+    };
+
+    try {
+      exportData(data);
+      toast({
+        title: 'Success',
+        description: 'Data exported successfully',
+      });
+    } catch (error) {
+      console.error('Failed to export data:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to export data',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const importAccountData = async (file: File) => {
+    if (!currentAccount) {
+      toast({
+        title: 'Error',
+        description: 'No account selected',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const data = await importData(file);
+
+      // Import categories first since transactions depend on them
+      for (const category of data.categories) {
+        await addCategory({
+          name: category.name,
+          type: category.type,
+          color: category.color,
+        });
+      }
+
+      // Import transactions
+      for (const transaction of data.transactions) {
+        await addTransaction({
+          type: transaction.type,
+          amount: transaction.amount,
+          category: transaction.category,
+          date: transaction.date,
+          title: transaction.title,
+        });
+      }
+
+      // Import limits
+      for (const limit of data.limits) {
+        await addLimit({
+          categoryId: limit.categoryId,
+          amount: limit.amount,
+          period: limit.period,
+        });
+      }
+
+      // Import templates
+      for (const template of data.templates) {
+        await addTemplate({
+          name: template.name,
+          items: template.items,
+        });
+      }
+
+      // Import recurring items
+      for (const item of data.recurringItems) {
+        await addRecurringItem({
+          name: item.name,
+          amount: item.amount,
+          type: item.type,
+          categoryId: item.categoryId,
+          frequency: item.frequency,
+          startDate: item.startDate,
+        });
+      }
+
+      // Import savings goals
+      for (const goal of data.savingsGoals) {
+        await addSavingsGoal({
+          name: goal.name,
+          targetAmount: goal.targetAmount,
+          currentAmount: goal.currentAmount,
+          targetDate: goal.targetDate,
+        });
+      }
+
+      // Reload account data
+      await loadAccountData(currentAccount.id);
+
+      toast({
+        title: 'Success',
+        description: 'Data imported successfully',
+      });
+    } catch (error) {
+      console.error('Failed to import data:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to import data',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const value = {
     currentAccount,
     accounts,
@@ -856,6 +987,8 @@ export const BudgetProvider = ({ children }: { children: ReactNode }) => {
     deleteSavingsGoal,
     resetApp,
     isLoading,
+    exportAccountData,
+    importAccountData,
   };
 
   return <BudgetContext.Provider value={value}>{children}</BudgetContext.Provider>;
