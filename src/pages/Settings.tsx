@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAccount } from '@/contexts/AccountContext';
 import Spinner from '@/components/ui/Spinner';
+import { useFeedbackForm } from '@/services/feedbackService';
 
 const Settings = () => {
   const { resetApp, addAccount, accounts, deleteAccount, exportAccountData, importAccountData } = useBudget();
@@ -41,6 +42,8 @@ const Settings = () => {
   const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [feedbackMessage, setFeedbackMessage] = useState('');
+  const { submitFeedback, state, ValidationError } = useFeedbackForm();
   
   const handleResetConfirm = async () => {
     setLoading(true);
@@ -84,11 +87,31 @@ const Settings = () => {
     }
   };
   
-  const handleFeedbackSubmit = () => {
-    toast({
-      title: t('feedback_sent'),
-      description: t('feedback_sent'),
-    });
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      toast({
+        title: t('error'),
+        description: t('please_enter_feedback'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await submitFeedback(feedbackMessage);
+      setFeedbackMessage('');
+      toast({
+        title: t('feedback_sent'),
+        description: t('feedback_sent_description'),
+      });
+    } catch (error) {
+      console.error('Failed to submit feedback:', error);
+      toast({
+        title: t('error'),
+        description: t('feedback_error'),
+        variant: 'destructive',
+      });
+    }
   };
   
   const handleLogout = async () => {
@@ -244,8 +267,24 @@ const Settings = () => {
             <textarea 
               className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue text-foreground bg-background"
               placeholder={t('your_feedback')}
+              value={feedbackMessage}
+              onChange={(e) => setFeedbackMessage(e.target.value)}
+              disabled={state.submitting}
+              name="message"
+              id="message"
             />
-            <Button onClick={handleFeedbackSubmit}>{t('send_feedback')}</Button>
+            <ValidationError 
+              prefix="Message" 
+              field="message"
+              errors={state.errors}
+              className="text-destructive text-sm"
+            />
+            <Button 
+              onClick={handleFeedbackSubmit}
+              disabled={state.submitting}
+            >
+              {state.submitting ? t('sending') : t('send_feedback')}
+            </Button>
           </div>
         </div>
         

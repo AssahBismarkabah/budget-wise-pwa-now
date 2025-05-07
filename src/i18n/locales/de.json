@@ -159,5 +159,10 @@
   "export_data": "Daten exportieren",
   "export_data_description": "Exportieren Sie Ihre Transaktionen, Kategorien und Einstellungen in eine Datei, die Sie auf einem anderen Gerät importieren können.",
   "import_data": "Daten importieren",
-  "import_data_description": "Importieren Sie zuvor exportierte Daten von einem anderen Gerät. Dies fügt die importierten Daten zu Ihrem aktuellen Konto hinzu."
+  "import_data_description": "Importieren Sie zuvor exportierte Daten von einem anderen Gerät. Dies fügt die importierten Daten zu Ihrem aktuellen Konto hinzu.",
+  "feedback_sent": "Feedback gesendet",
+  "feedback_sent_description": "Vielen Dank für Ihr Feedback! Es wird gesendet, wenn Sie online sind.",
+  "feedback_error": "Feedback konnte nicht gesendet werden. Es wird gespeichert und gesendet, wenn Sie online sind.",
+  "please_enter_feedback": "Bitte geben Sie Ihr Feedback ein",
+  "sending": "Wird gesendet..."
 } 
