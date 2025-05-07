@@ -1,13 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { useBudget } from '@/contexts/BudgetContext';
 import { Transaction, TransactionType } from '@/services/dbService';
 import { useTranslation } from 'react-i18next';
@@ -94,18 +87,19 @@ const TransactionForm = ({ type, onSave, onCancel, editTransaction }: Transactio
         <label htmlFor="category" className="block text-sm font-medium mb-1">
           {t('category')}
         </label>
-        <Select value={categoryId} onValueChange={setCategoryId}>
-          <SelectTrigger>
-            <SelectValue placeholder={t('category_placeholder')} />
-          </SelectTrigger>
-          <SelectContent>
-            {filteredCategories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <select
+          id="category"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className="w-full border rounded-md p-2 bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-budget-blue"
+          required
+        >
+          {filteredCategories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
       
       <div>

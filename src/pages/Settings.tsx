@@ -187,7 +187,7 @@ const Settings = () => {
               {t('feedback_desc')}
             </p>
             <textarea 
-              className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue"
+              className="w-full border rounded-md p-2 min-h-[100px] focus:outline-none focus:ring-2 focus:ring-budget-blue text-foreground bg-background"
               placeholder={t('your_feedback')}
             />
             <Button onClick={handleFeedbackSubmit}>{t('send_feedback')}</Button>
