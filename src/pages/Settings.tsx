@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,7 @@ import { useAccount } from '@/contexts/AccountContext';
 import Spinner from '@/components/ui/Spinner';
 
 const Settings = () => {
-  const { resetApp, addAccount, accounts, deleteAccount } = useBudget();
+  const { resetApp, addAccount, accounts, deleteAccount, exportAccountData, importAccountData } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
   const { logout } = useAccount();
@@ -40,6 +40,7 @@ const Settings = () => {
   const [offlineMode, setOfflineMode] = useState(false);
   const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleResetConfirm = async () => {
     setLoading(true);
@@ -96,6 +97,21 @@ const Settings = () => {
     logout();
     setLoading(false);
   };
+
+  const handleExport = () => {
+    exportAccountData();
+  };
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      importAccountData(file);
+    }
+    // Reset the input value so the same file can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
   
   return (
     <Layout>
@@ -106,6 +122,45 @@ const Settings = () => {
       )}
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
+        
+        {/* Data Management Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">{t('data_management')}</h2>
+          <div className="space-y-4">
+            <div className="flex flex-col space-y-2">
+              <Button 
+                onClick={handleExport}
+                className="w-full"
+              >
+                {t('export_data')}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('export_data_description')}
+              </p>
+            </div>
+            
+            <div className="flex flex-col space-y-2">
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                ref={fileInputRef}
+                className="hidden"
+                id="import-file"
+              />
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                variant="outline"
+                className="w-full"
+              >
+                {t('import_data')}
+              </Button>
+              <p className="text-sm text-muted-foreground">
+                {t('import_data_description')}
+              </p>
+            </div>
+          </div>
+        </div>
         
         {/* Account Management */}
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">

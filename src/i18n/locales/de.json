@@ -154,5 +154,10 @@
   "select_account_desc": "Wählen Sie ein bestehendes Konto zum Einloggen oder erstellen Sie ein neues.",
   "back": "Zurück",
   "tagline": "Clever haushalten, besser leben.",
-  "loading": "Lädt..."
+  "loading": "Lädt...",
+  "data_management": "Datenverwaltung",
+  "export_data": "Daten exportieren",
+  "export_data_description": "Exportieren Sie Ihre Transaktionen, Kategorien und Einstellungen in eine Datei, die Sie auf einem anderen Gerät importieren können.",
+  "import_data": "Daten importieren",
+  "import_data_description": "Importieren Sie zuvor exportierte Daten von einem anderen Gerät. Dies fügt die importierten Daten zu Ihrem aktuellen Konto hinzu."
 } 
