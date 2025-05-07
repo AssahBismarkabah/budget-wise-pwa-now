@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { useTranslation } from 'react-i18next';
 import { toast } from '@/components/ui/use-toast';
+import { useFeedbackForm } from '@/services/feedbackService';
 
 const FeedbackForm = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,24 +19,35 @@ const FeedbackForm = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const { t } = useTranslation();
+  const { submitFeedback, state } = useFeedbackForm();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // This is a placeholder - in a real app, this would send to a backend
-    console.log('Feedback submitted:', { name, email, message });
-    
-    // Show success message
-    toast({
-      title: t('feedback_success_title'),
-      description: t('feedback_success_description'),
-    });
-    
-    // Reset form and close dialog
-    setName('');
-    setEmail('');
-    setMessage('');
-    setIsOpen(false);
+    if (!message.trim()) {
+      toast({
+        title: t('error'),
+        description: t('please_enter_feedback'),
+        variant: 'destructive',
+      });
+      return;
+    }
+    try {
+      await submitFeedback(message);
+      setName('');
+      setEmail('');
+      setMessage('');
+      setIsOpen(false);
+      toast({
+        title: t('feedback_sent'),
+        description: t('feedback_sent_description'),
+      });
+    } catch (error) {
+      toast({
+        title: t('feedback_error'),
+        description: t('feedback_error'),
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -104,8 +116,8 @@ const FeedbackForm = () => {
               >
                 {t('cancel')}
               </Button>
-              <Button type="submit">
-                {t('submit')}
+              <Button type="submit" disabled={state.submitting}>
+                {state.submitting ? t('sending') : t('submit')}
               </Button>
             </div>
           </form>

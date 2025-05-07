@@ -224,18 +224,19 @@ const Limits = () => {
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
                   {t('category')}
                 </label>
-                <Select value={categoryId} onValueChange={setCategoryId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('select_category')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {expenseCategories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {getCategoryLabel(t, category.name)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  id="category"
+                  value={categoryId}
+                  onChange={e => setCategoryId(e.target.value)}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="" disabled>{t('select_category')}</option>
+                  {expenseCategories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {getCategoryLabel(t, category.name)}
+                    </option>
+                  ))}
+                </select>
               </div>
               
               <div>

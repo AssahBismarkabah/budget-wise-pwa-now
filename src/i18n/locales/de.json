@@ -164,5 +164,8 @@
   "feedback_sent_description": "Vielen Dank für Ihr Feedback! Es wird gesendet, wenn Sie online sind.",
   "feedback_error": "Feedback konnte nicht gesendet werden. Es wird gespeichert und gesendet, wenn Sie online sind.",
   "please_enter_feedback": "Bitte geben Sie Ihr Feedback ein",
-  "sending": "Wird gesendet..."
+  "sending": "Wird gesendet...",
+  "savingsGoals.newGoal": "Neues Sparziel",
+  "savingsGoals.namePlaceholder": "Name für das Sparziel eingeben",
+  "savingsGoals.save": "Sparziel speichern"
 } 

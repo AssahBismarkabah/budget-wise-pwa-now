@@ -165,5 +165,8 @@
   "feedback_sent_description": "Thank you for your feedback! It will be sent when you're online.",
   "feedback_error": "Failed to submit feedback. It will be saved and sent when you're online.",
   "please_enter_feedback": "Please enter your feedback",
-  "sending": "Sending..."
+  "sending": "Sending...",
+  "savingsGoals.newGoal": "New Savings Goal",
+  "savingsGoals.namePlaceholder": "Enter a name for your goal",
+  "savingsGoals.save": "Save Goal"
 } 

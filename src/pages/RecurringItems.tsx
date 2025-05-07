@@ -260,39 +260,39 @@ const RecurringItems = () => {
                 <label htmlFor="type" className="block text-sm font-medium mb-1">
                   {t('type')}
                 </label>
-                <Select value={type} onValueChange={(value: TransactionType) => {
-                  setType(value);
-                  // Reset category when changing type
-                  setCategoryId('');
-                }}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('type_placeholder')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="income">Einnahme</SelectItem>
-                    <SelectItem value="expense">Ausgabe</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select
+                  id="type"
+                  value={type}
+                  onChange={e => {
+                    setType(e.target.value as TransactionType);
+                    setCategoryId('');
+                  }}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="income">{t('income')}</option>
+                  <option value="expense">{t('expense')}</option>
+                </select>
               </div>
               
               <div>
                 <label htmlFor="category" className="block text-sm font-medium mb-1">
                   {t('category')}
                 </label>
-                <Select value={categoryId} onValueChange={setCategoryId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('category_placeholder')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories
-                      .filter(category => category.type === type)
-                      .map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {getCategoryLabel(t, category.name)}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <select
+                  id="category"
+                  value={categoryId}
+                  onChange={e => setCategoryId(e.target.value)}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="" disabled>{t('category_placeholder')}</option>
+                  {categories
+                    .filter(category => category.type === type)
+                    .map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {getCategoryLabel(t, category.name)}
+                      </option>
+                    ))}
+                </select>
               </div>
               
               <div>
@@ -314,16 +314,16 @@ const RecurringItems = () => {
                 <label htmlFor="frequency" className="block text-sm font-medium mb-1">
                   {t('frequency')}
                 </label>
-                <Select value={frequency} onValueChange={(value: 'daily' | 'weekly' | 'monthly') => setFrequency(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('frequency_placeholder')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="daily">{t('frequency_daily')}</SelectItem>
-                    <SelectItem value="weekly">{t('frequency_weekly')}</SelectItem>
-                    <SelectItem value="monthly">{t('frequency_monthly')}</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select
+                  id="frequency"
+                  value={frequency}
+                  onChange={e => setFrequency(e.target.value as 'daily' | 'weekly' | 'monthly')}
+                  className="w-full border rounded-md p-2 bg-background text-foreground"
+                >
+                  <option value="daily">{t('frequency_daily')}</option>
+                  <option value="weekly">{t('frequency_weekly')}</option>
+                  <option value="monthly">{t('frequency_monthly')}</option>
+                </select>
               </div>
               
               <div>
