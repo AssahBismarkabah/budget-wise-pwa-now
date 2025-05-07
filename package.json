@@ -76,7 +76,6 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
-    "lovable-tagger": "^1.1.7",
     "postcss": "^8.5.3",
     "stylelint": "^16.19.1",
     "stylelint-config-recommended": "^16.0.0",
