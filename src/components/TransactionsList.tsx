@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { aisService, Transaction } from '../services/aisService';
 
 interface TransactionsListProps {
