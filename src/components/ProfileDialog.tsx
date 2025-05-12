@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
@@ -43,7 +43,7 @@ const ProfileDialog: React.FC<ProfileDialogProps> = ({ open, onOpenChange }) => 
     onOpenChange(false);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (open && currentAccount) {
       setName(currentAccount.name || '');
       setEmail(currentAccount.email || '');
