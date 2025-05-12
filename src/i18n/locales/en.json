@@ -176,5 +176,8 @@
   "savingsGoals.deleteConfirmDelete": "Delete",
   "savingsGoals.deleteConfirmCancel": "Cancel",
   "delete_limit": "Delete Limit?",
-  "are_you_sure_delete": "Are you sure you want to delete this limit? This action cannot be undone."
+  "are_you_sure_delete": "Are you sure you want to delete this limit? This action cannot be undone.",
+  "bank_integration": "Bank Integration",
+  "bank_integration_description": "Connect your bank account to automatically import transactions and keep your budget up to date.",
+  "connect_bank": "Connect Bank"
 } 

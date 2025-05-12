@@ -28,12 +28,14 @@ import {
 import { useAccount } from '@/contexts/AccountContext';
 import Spinner from '@/components/ui/Spinner';
 import { useFeedbackForm } from '@/services/feedbackService';
+import { useNavigate } from 'react-router-dom';
 
 const Settings = () => {
   const { resetApp, addAccount, accounts, deleteAccount, exportAccountData, importAccountData } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
   const { logout } = useAccount();
+  const navigate = useNavigate();
   
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [newAccountOpen, setNewAccountOpen] = useState(false);
@@ -203,6 +205,22 @@ const Settings = () => {
               </div>
             ))}
             <Button onClick={() => setNewAccountOpen(true)}>{t('new_account')}</Button>
+          </div>
+        </div>
+
+        {/* Bank Integration */}
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
+          <h2 className="text-lg font-medium mb-4">{t('bank_integration')}</h2>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {t('bank_integration_description')}
+            </p>
+            <Button
+              onClick={() => navigate('/bank-integration')}
+              className="w-full"
+            >
+              {t('connect_bank')}
+            </Button>
           </div>
         </div>
         

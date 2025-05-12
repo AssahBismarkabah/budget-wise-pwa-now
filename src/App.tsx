@@ -22,6 +22,8 @@ import PWAInstallPrompt from './components/PWAInstallPrompt';
 import FirefoxInstallHint from './components/FirefoxInstallHint';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useState } from 'react';
+import BankIntegration from './pages/BankIntegration';
+import { ConsentRedirect } from './components/ConsentRedirect';
 
 const queryClient = new QueryClient();
 
@@ -164,6 +166,8 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
+                  <Route path="/bank-integration" element={<BankIntegration />} />
+                  <Route path="/consent-redirect" element={<ConsentRedirect />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BudgetProvider>

@@ -175,5 +175,8 @@
   "savingsGoals.deleteConfirmDelete": "Löschen",
   "savingsGoals.deleteConfirmCancel": "Abbrechen",
   "delete_limit": "Limit löschen?",
-  "are_you_sure_delete": "Möchten Sie dieses Limit wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+  "are_you_sure_delete": "Möchten Sie dieses Limit wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+  "bank_integration": "Bank-Integration",
+  "bank_integration_description": "Verbinden Sie Ihr Bankkonto, um Transaktionen automatisch zu importieren und Ihr Budget aktuell zu halten.",
+  "connect_bank": "Bank verbinden"
 } 
