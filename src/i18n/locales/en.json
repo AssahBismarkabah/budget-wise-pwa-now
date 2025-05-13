@@ -179,5 +179,11 @@
   "are_you_sure_delete": "Are you sure you want to delete this limit? This action cannot be undone.",
   "bank_integration": "Bank Integration",
   "bank_integration_description": "Connect your bank account to automatically import transactions and keep your budget up to date.",
-  "connect_bank": "Connect Bank"
+  "connect_bank": "Connect Bank",
+  "bank_search": "Bank Search",
+  "bank_search_description": "Find your bank to connect your account.",
+  "search_banks_placeholder": "Search for your bank...",
+  "search": "Search",
+  "searching": "Searching...",
+  "search_results": "Search Results"
 } 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Auth from '@/pages/Auth';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { BankSearch } from '@/components/BankSearch';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +9,6 @@ import { TransactionsList } from '@/components/TransactionsList';
 import { aisService } from '@/services/aisService';
 import { storageService } from '@/services/storageService';
 import { BankProfile } from '@/services/aisService';
-import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
@@ -65,9 +65,11 @@ const BankIntegration = () => {
   };
 
   return (
-    <div className="p-6">
+    <>
       {!isFintechAuthenticated ? (
-        <Auth onSuccess={() => setIsFintechAuthenticated(true)} />
+        <AuthProvider>
+          <Auth onSuccess={() => setIsFintechAuthenticated(true)} />
+        </AuthProvider>
       ) : (
         <>
           <div className="flex items-center mb-6">
@@ -117,7 +119,7 @@ const BankIntegration = () => {
           )}
         </>
       )}
-    </div>
+    </>
   );
 };
 

@@ -178,5 +178,11 @@
   "are_you_sure_delete": "Möchten Sie dieses Limit wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
   "bank_integration": "Bank-Integration",
   "bank_integration_description": "Verbinden Sie Ihr Bankkonto, um Transaktionen automatisch zu importieren und Ihr Budget aktuell zu halten.",
-  "connect_bank": "Bank verbinden"
+  "connect_bank": "Bank verbinden",
+  "bank_search": "Banksuche",
+  "bank_search_description": "Finden Sie Ihre Bank, um Ihr Konto zu verbinden.",
+  "search_banks_placeholder": "Bank suchen...",
+  "search": "Suchen",
+  "searching": "Suche läuft...",
+  "search_results": "Suchergebnisse"
 } 
