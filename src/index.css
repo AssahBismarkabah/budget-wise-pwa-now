@@ -16,25 +16,25 @@
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 210 100% 56%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 220 14% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 210 16% 93%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 48 100% 50%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 210 100% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -44,36 +44,60 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-purple: 260 80% 75%;
+    --chart-green: 130 63% 58%;
+    --chart-yellow: 48 100% 50%;
+    --chart-orange: 36 100% 50%;
+    --chart-red: 0 84% 60%;
+
+    --tag-work: 260 80% 75%;
+    --tag-entertainment: 48 100% 50%;
+    --tag-restaurant: 130 63% 58%;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 224 16% 15%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 224 16% 15%;
     --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 210 100% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 224 16% 18%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 224 16% 18%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 48 100% 50%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 224 16% 25%;
+    --input: 224 16% 25%;
+    --ring: 210 100% 56%;
+    --sidebar-background: 224 16% 15%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 100% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 224 16% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 224 16% 25%;
+    --sidebar-ring: 210 100% 56%;
+    --chart-purple: 260 80% 75%;
+    --chart-green: 130 63% 58%;
+    --chart-yellow: 48 100% 50%;
+    --chart-orange: 36 100% 50%;
+    --chart-red: 0 84% 60%;
+    --tag-work: 260 80% 75%;
+    --tag-entertainment: 48 100% 50%;
+    --tag-restaurant: 130 63% 58%;
+  }
+
+  button:focus, button:active, .btn:focus, .btn:active, .primary-button:focus, .primary-button:active, .add-income-button:focus, .add-expense-button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px #1E90FF !important;
+    border-color: #1E90FF !important;
   }
 }
 
@@ -125,12 +149,9 @@
     @apply border border-border text-foreground rounded-lg py-2 px-4 hover:bg-accent transition-colors;
   }
   
-  .add-income-button {
-    @apply bg-budget-green text-white rounded-full w-12 h-12 flex items-center justify-center hover:opacity-90 transition-opacity shadow-md;
-  }
-  
-  .add-expense-button {
-    @apply bg-budget-red text-white rounded-full w-12 h-12 flex items-center justify-center hover:opacity-90 transition-opacity shadow-md;
+  .add-income-button, .add-expense-button {
+    @apply bg-budget-blue text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity border-2 border-white;
+    font-size: 2rem;
   }
 }
 

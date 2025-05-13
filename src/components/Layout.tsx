@@ -80,18 +80,17 @@ const Layout = ({ children }: LayoutProps) => {
       <header className="bg-card dark:bg-gray-800 text-primary-foreground dark:text-white border-b border-border dark:border-gray-700 sticky top-0 z-10 shadow-sm transition-colors duration-300">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
+            <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={() => setSidebarOpen(true)}
-                className="text-primary hover:bg-accent dark:text-white dark:hover:bg-gray-700 mr-2"
+                className="text-primary hover:bg-accent dark:text-white dark:hover:bg-gray-700"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6" />
               </Button>
-              <Logo showText={true} size="small" />
+              <span className="ml-2 text-xl font-bold text-budget-blue tracking-tight select-none">MyBudget</span>
             </div>
-            
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
@@ -101,9 +100,9 @@ const Layout = ({ children }: LayoutProps) => {
                 title={isDarkMode ? t('light_mode') : t('dark_mode')}
               >
                 {isDarkMode ? (
-                  <Sun className="h-5 w-5" />
+                  <Sun className="h-6 w-6" />
                 ) : (
-                  <Moon className="h-5 w-5" />
+                  <Moon className="h-6 w-6" />
                 )}
               </Button>
               <Button variant="ghost" size="icon" onClick={() => setProfileDialogOpen(true)}>
