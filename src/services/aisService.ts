@@ -135,13 +135,20 @@ export const aisService = {
         params: { keyword: query }
       });
       console.log('Bank search response:', response.data);
-      const mapped = response.data.bankDescriptor.map((bank: any) => ({
-        id: bank.uuid,
-        name: bank.bankName,
-        bic: bank.bic,
-        bankCode: bank.bankCode
-      }));
-      console.log('Mapped bank UUIDs:', mapped.map(b => b.id));
+      // Map each profile as a separate entry, as in fintech-ui
+      const mapped = [];
+      for (const bank of response.data.bankDescriptor) {
+        if (!bank.profiles) continue;
+        for (const profile of bank.profiles) {
+          mapped.push({
+            id: profile.uuid,
+            name: `[${profile.protocolType}${profile.name ? ',' + profile.name : ''}] ${bank.bankName}`,
+            bic: bank.bic,
+            bankCode: bank.bankCode
+          });
+        }
+      }
+      console.log('Mapped bank profiles:', mapped);
       return mapped;
     } catch (error) {
       console.error('Error searching banks:', error);
@@ -150,9 +157,25 @@ export const aisService = {
   },
 
   async getBankProfile(bankId: string): Promise<BankProfile> {
+    // Validate UUID format
+    if (!bankId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      throw new Error('Invalid bank ID format');
+    }
+
+    const xRequestId = crypto.randomUUID();
+    const timestamp = new Date().toISOString();
+    const fintechId = localStorage.getItem('fintechId') || '';
+    const xsrfToken = localStorage.getItem('xsrfToken') || '';
+
     const response = await axios.get(`${API_BASE_URL}/search/bankProfile`, {
-      headers: getHeaders(),
-      params: { bankProfileId: bankId },
+      headers: {
+        ...getHeaders(),
+        'X-Request-ID': xRequestId,
+        'X-XSRF-TOKEN': xsrfToken,
+        'x-timestamp': timestamp,
+        'X-Fintech-ID': fintechId
+      },
+      params: { bankProfileID: bankId },
       withCredentials: true
     });
     return response.data;

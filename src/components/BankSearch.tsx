@@ -38,6 +38,21 @@ export const BankSearch: React.FC<BankSearchProps> = ({ onSelect }) => {
     }
   };
 
+  const handleBankSelect = async (bank: Bank) => {
+    try {
+      // Validate UUID format
+      if (!bank.id.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+        console.error('Invalid bank ID format:', bank.id);
+        return;
+      }
+      const bankProfile = await aisService.getBankProfile(bank.id);
+      onSelect(bank);
+    } catch (error) {
+      console.error('Error fetching bank profile:', error);
+      setError('Failed to connect to bank. Please try again.');
+    }
+  };
+
   return (
     <div className="container mx-auto p-6">
       <Card>
@@ -70,7 +85,7 @@ export const BankSearch: React.FC<BankSearchProps> = ({ onSelect }) => {
                   <Card 
                     key={bank.id}
                     className="cursor-pointer hover:bg-accent"
-                    onClick={() => onSelect(bank)}
+                    onClick={() => handleBankSelect(bank)}
                   >
                     <CardContent className="p-4">
                       <h4 className="font-medium">{bank.name}</h4>
