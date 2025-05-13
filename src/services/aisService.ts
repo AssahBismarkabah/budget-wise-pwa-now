@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { api } from './authService';
 
 const API_BASE_URL = 'http://localhost:8086/v1';
 
@@ -10,7 +11,7 @@ const getHeaders = () => ({
   'X-Fintech-ID': FINTECH_ID,
   'Content-Type': 'application/json',
   'X-Request-ID': crypto.randomUUID(),
-  'X-Session-ID': crypto.randomUUID(),
+  'x-session-id': crypto.randomUUID(),
   'X-Timestamp': new Date().toISOString(),
   ...(fintechToken ? { 'fintech-token': fintechToken } : {})
 });
@@ -129,15 +130,15 @@ export const aisService = {
 
   async searchBanks(query: string) {
     try {
-      const response = await axios.get(`${API_BASE_URL}/banks/search`, {
-        params: { query },
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Request-ID': crypto.randomUUID()
-        },
-        withCredentials: true // This ensures cookies are sent with the request
+      const response = await api.get(`${API_BASE_URL}/search/bankSearch`, {
+        params: { keyword: query }
       });
-      return response.data;
+      return response.data.bankDescriptor.map((bank: any) => ({
+        id: bank.bankId,
+        name: bank.bankName,
+        bic: bank.bic,
+        bankCode: bank.bankCode
+      }));
     } catch (error) {
       console.error('Error searching banks:', error);
       throw error;

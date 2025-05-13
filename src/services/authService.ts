@@ -15,7 +15,7 @@ export interface AuthResponse {
 }
 
 // Create an axios instance with default config
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
@@ -27,6 +27,13 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   // Add X-Request-ID header
   config.headers['X-Request-ID'] = crypto.randomUUID();
+  
+  // Add XSRF token if available
+  const xsrfToken = localStorage.getItem('xsrfToken');
+  if (xsrfToken) {
+    config.headers['X-XSRF-TOKEN'] = xsrfToken;
+  }
+  
   return config;
 });
 
@@ -36,6 +43,13 @@ export const authService = {
       username,
       password
     });
+    
+    // Store XSRF token from response
+    const xsrfToken = response.headers['x-xsrf-token'];
+    if (xsrfToken) {
+      localStorage.setItem('xsrfToken', xsrfToken);
+    }
+    
     return response.data;
   },
 
@@ -44,10 +58,18 @@ export const authService = {
       username,
       password
     });
+    
+    // Store XSRF token from response
+    const xsrfToken = response.headers['x-xsrf-token'];
+    if (xsrfToken) {
+      localStorage.setItem('xsrfToken', xsrfToken);
+    }
+    
     return response.data;
   },
 
   async logout(): Promise<void> {
     await api.post('/logout');
+    localStorage.removeItem('xsrfToken');
   }
 }; 
