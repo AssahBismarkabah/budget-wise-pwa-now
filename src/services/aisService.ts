@@ -200,18 +200,39 @@ export const aisService = {
         params: {
           withBalance: 'true'
         },
-        withCredentials: true
+        withCredentials: true,
+        validateStatus: (status) => status === 200 || status === 202 // Accept both 200 and 202
       });
 
-      if (response.data.redirectUrl) {
-        window.location.href = response.data.redirectUrl;
-        return { redirectUrl: response.data.redirectUrl };
+      // For 202 status, check response headers for location
+      if (response.status === 202) {
+        const redirectUrl = response.headers.location;
+        if (!redirectUrl) {
+          throw new Error('No redirect URL found in response headers');
+        }
+        console.log('Redirecting to:', redirectUrl);
+        // Don't redirect immediately, return the URL for the UI to handle
+        return { redirectUrl };
       }
-      if (response.data.accounts && response.data.accounts.length > 0) {
-        return { accounts: response.data.accounts };
+
+      // For 200 status, check response data
+      if (response.status === 200) {
+        if (response.data?.redirectUrl) {
+          return { redirectUrl: response.data.redirectUrl };
+        }
+        if (response.data?.accounts && response.data.accounts.length > 0) {
+          return { accounts: response.data.accounts };
+        }
       }
+
       throw new Error('No redirect URL or accounts found in response');
-    } catch (error) {
+    } catch (error: any) {
+      // Check for redirect URL in error response headers
+      if (error.response?.headers?.location) {
+        const redirectUrl = error.response.headers.location;
+        console.log('Redirecting to (from error):', redirectUrl);
+        return { redirectUrl };
+      }
       console.error('Error initiating consent:', error);
       throw error;
     }

@@ -22,16 +22,7 @@ interface Bank {
 interface Account {
   id: string;
   name: string;
-  iban: string;
-  product: string;
-  cashAccountType: string;
-  balances?: {
-    balanceAmount: {
-      amount: string;
-      currency: string;
-    };
-    balanceType: string;
-  }[];
+  balance?: number;
 }
 
 const BankIntegration = () => {
@@ -43,30 +34,28 @@ const BankIntegration = () => {
   const [bankProfile, setBankProfile] = useState<BankProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   const handleBankSelect = async (bank: Bank) => {
-    setLoading(true);
-    setError(null);
     try {
-      // First get the bank profile
-      const profile = await aisService.getBankProfile(bank.id);
-      setBankProfile(profile);
-
-      // Then initiate consent
+      setLoading(true);
       const consent = await aisService.initiateConsent(bank.id);
       
-      // If consent requires redirect, handle it
       if (consent.redirectUrl) {
-        window.location.href = consent.redirectUrl;
+        // Show confirmation dialog before redirecting
+        const confirmed = window.confirm(`You will be redirected to ${bank.name} to authorize access to your accounts. Do you want to continue?`);
+        if (confirmed) {
+          window.location.href = consent.redirectUrl;
+        }
         return;
       }
 
-      // If no redirect needed, proceed with account selection
-      setSelectedBank(bank);
-      setSelectedAccount(null);
-    } catch (err) {
-      console.error('Error selecting bank:', err);
-      setError('Failed to connect to bank. Please try again.');
+      if (consent.accounts) {
+        setAccounts(consent.accounts);
+      }
+    } catch (error) {
+      console.error('Error selecting bank:', error);
+      setError(error instanceof Error ? error.message : 'Failed to connect to bank');
     } finally {
       setLoading(false);
     }
