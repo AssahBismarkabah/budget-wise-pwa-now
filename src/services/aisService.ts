@@ -183,18 +183,34 @@ export const aisService = {
 
   async initiateConsent(bankId: string) {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/consents`,
-        { bankId },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Request-ID': crypto.randomUUID()
-          },
-          withCredentials: true
-        }
-      );
-      return response.data;
+      const xRequestId = crypto.randomUUID();
+      const xsrfToken = localStorage.getItem('xsrfToken') || '';
+      const fintechRedirectOk = window.location.origin + '/bank-integration';
+      const fintechRedirectNok = window.location.origin + '/bank-integration';
+      
+      const response = await axios.get(`${API_BASE_URL}/ais/banks/${bankId}/accounts`, {
+        headers: {
+          ...getHeaders(),
+          'X-Request-ID': xRequestId,
+          'X-XSRF-TOKEN': xsrfToken,
+          'Fintech-Redirect-URL-OK': fintechRedirectOk,
+          'Fintech-Redirect-URL-NOK': fintechRedirectNok,
+          'LoARetrievalInformation': 'FROM_TPP_WITH_AVAILABLE_CONSENT',
+        },
+        params: {
+          withBalance: 'true'
+        },
+        withCredentials: true
+      });
+
+      if (response.data.redirectUrl) {
+        window.location.href = response.data.redirectUrl;
+        return { redirectUrl: response.data.redirectUrl };
+      }
+      if (response.data.accounts && response.data.accounts.length > 0) {
+        return { accounts: response.data.accounts };
+      }
+      throw new Error('No redirect URL or accounts found in response');
     } catch (error) {
       console.error('Error initiating consent:', error);
       throw error;
