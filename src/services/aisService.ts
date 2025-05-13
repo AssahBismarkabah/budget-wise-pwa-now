@@ -175,7 +175,7 @@ export const aisService = {
         'x-timestamp': timestamp,
         'X-Fintech-ID': fintechId
       },
-      params: { bankProfileID: bankId },
+      params: { bankProfileId: bankId },
       withCredentials: true
     });
     return response.data;
