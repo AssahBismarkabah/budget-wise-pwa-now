@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Globe, Trash2 } from 'lucide-react';
+import { Globe, Trash2, Building2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -217,8 +217,9 @@ const Settings = () => {
             </p>
             <Button
               onClick={() => navigate('/bank-integration')}
-              className="w-full"
+              className="w-full flex items-center justify-center gap-2"
             >
+              <Building2 className="h-4 w-4" />
               {t('connect_bank')}
             </Button>
           </div>

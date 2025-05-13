@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
-import Layout from '@/components/Layout';
+// import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
 import { formatCurrency, getFirstDayOfMonth, getLastDayOfMonth } from '@/lib/formatters';
 import TransactionForm from '@/components/TransactionForm';
@@ -43,23 +43,7 @@ const Index = () => {
   );
 
   return (
-    <Layout>
-      {/* Account Banner */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 flex justify-between items-center rounded-b-lg shadow-md">
-        <div className="flex flex-col">
-          <h2 className="text-xl font-medium">
-            {currentAccount?.name || t('account_placeholder')}
-          </h2>
-          <p className="text-sm opacity-80 mt-1">
-            {new Date().toLocaleDateString(
-              { de: 'de-DE', en: 'en-US' }[language], 
-              { month: 'long', year: 'numeric' }
-            )}
-          </p>
-        </div>
-        <Logo size="small" showText={false} />
-      </div>
-
+    <>
       {/* Budget Summary */}
       <div className="p-4">
         <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-4">
@@ -152,7 +136,7 @@ const Index = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </Layout>
+    </>
   );
 };
 

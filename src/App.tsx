@@ -17,20 +17,30 @@ import SavingsGoals from "./pages/SavingsGoals";
 import RecurringItems from "./pages/RecurringItems";
 import Onboarding from "./pages/Onboarding";
 import { useTranslation } from 'react-i18next';
-import { useAccount } from "@/contexts/AccountContext";
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import FirefoxInstallHint from './components/FirefoxInstallHint';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 import BankIntegration from './pages/BankIntegration';
-import { ConsentRedirect } from './components/ConsentRedirect';
+import { useAuth } from '@/contexts/AuthContext';
+import Layout from '@/components/Layout';
 
 const queryClient = new QueryClient();
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAccount();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/onboarding" replace />;
+  const { isAuthenticated } = useAuth();
+  const onboardingComplete = localStorage.getItem('onboardingComplete') === 'true';
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" />;
+  }
+  
+  if (!onboardingComplete) {
+    return <Navigate to="/onboarding" />;
+  }
+  
+  return <>{children}</>;
 };
 
 const DesktopOverlay = () => {
@@ -71,6 +81,10 @@ const DesktopOverlay = () => {
   );
 };
 
+function getOnboardingComplete() {
+  return localStorage.getItem('onboardingComplete') === 'true';
+}
+
 const App = () => {
   const { t, i18n } = useTranslation();
   const language = i18n.language;
@@ -104,70 +118,78 @@ const App = () => {
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route
                     path="/"
-                    element={
-                      <ProtectedRoute>
+                    element={getOnboardingComplete() ? (
+                      <Layout>
                         <Index />
-                      </ProtectedRoute>
+                      </Layout>
+                    ) : (
+                      <Onboarding />
+                    )}
+                  />
+                  <Route
+                    path="/bank-integration"
+                    element={
+                      <Layout>
+                        <BankIntegration />
+                      </Layout>
                     }
                   />
                   <Route
                     path="/settings"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <Settings />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
                     path="/templates"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <Templates />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
                     path="/statistics"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <Statistics />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
-                    path="/categories/:type"
+                    path="/categories"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <Categories />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
                     path="/limits"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <Limits />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
                     path="/savings-goals"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <SavingsGoals />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
                   <Route
-                    path="/recurring"
+                    path="/recurring-items"
                     element={
-                      <ProtectedRoute>
+                      <Layout>
                         <RecurringItems />
-                      </ProtectedRoute>
+                      </Layout>
                     }
                   />
-                  <Route path="/bank-integration" element={<BankIntegration />} />
-                  <Route path="/consent-redirect" element={<ConsentRedirect />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BudgetProvider>
