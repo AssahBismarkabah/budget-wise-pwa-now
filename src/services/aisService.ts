@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { api } from './authService';
+import { v4 as uuidv4 } from 'uuid';
 
 const API_BASE_URL = 'http://localhost:8086/v1';
 
@@ -92,7 +93,7 @@ export const aisService = {
   },
 
   async getAccounts(bankId: string, withBalance: boolean = true) {
-    const response = await axios.get(`${API_BASE_URL}/v1/banking/ais/accounts`, {
+    const response = await axios.get(`${API_BASE_URL}/banking/ais/accounts`, {
       headers: getHeaders(),
       params: {
         bankId,
@@ -133,12 +134,15 @@ export const aisService = {
       const response = await api.get(`${API_BASE_URL}/search/bankSearch`, {
         params: { keyword: query }
       });
-      return response.data.bankDescriptor.map((bank: any) => ({
-        id: bank.bankId,
+      console.log('Bank search response:', response.data);
+      const mapped = response.data.bankDescriptor.map((bank: any) => ({
+        id: bank.uuid,
         name: bank.bankName,
         bic: bank.bic,
         bankCode: bank.bankCode
       }));
+      console.log('Mapped bank UUIDs:', mapped.map(b => b.id));
+      return mapped;
     } catch (error) {
       console.error('Error searching banks:', error);
       throw error;
@@ -146,15 +150,12 @@ export const aisService = {
   },
 
   async getBankProfile(bankId: string): Promise<BankProfile> {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/v1/banks/${bankId}/profile`, {
-        headers: getHeaders()
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching bank profile:', error);
-      throw error;
-    }
+    const response = await axios.get(`${API_BASE_URL}/search/bankProfile`, {
+      headers: getHeaders(),
+      params: { bankProfileId: bankId },
+      withCredentials: true
+    });
+    return response.data;
   },
 
   async initiateConsent(bankId: string) {

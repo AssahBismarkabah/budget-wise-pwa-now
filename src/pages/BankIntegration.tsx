@@ -44,9 +44,32 @@ const BankIntegration = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleBankSelect = (bank: Bank) => {
-    setSelectedBank(bank);
-    setSelectedAccount(null);
+  const handleBankSelect = async (bank: Bank) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // First get the bank profile
+      const profile = await aisService.getBankProfile(bank.id);
+      setBankProfile(profile);
+
+      // Then initiate consent
+      const consent = await aisService.initiateConsent(bank.id);
+      
+      // If consent requires redirect, handle it
+      if (consent.redirectUrl) {
+        window.location.href = consent.redirectUrl;
+        return;
+      }
+
+      // If no redirect needed, proceed with account selection
+      setSelectedBank(bank);
+      setSelectedAccount(null);
+    } catch (err) {
+      console.error('Error selecting bank:', err);
+      setError('Failed to connect to bank. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAccountSelect = (account: Account) => {
