@@ -159,39 +159,39 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Add Transaction Buttons */}
-      <div className="fixed right-6 bottom-24 flex flex-col gap-4 z-50">
-        <Dialog open={incomeDialogOpen} onOpenChange={setIncomeDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="add-income-button">
-              <Plus className="h-8 w-8" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>Add Income</DialogTitle>
-            <TransactionForm 
-              type="income"
-              onSave={() => setIncomeDialogOpen(false)}
-              onCancel={() => setIncomeDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-        <Dialog open={expenseDialogOpen} onOpenChange={setExpenseDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="add-expense-button">
-              <Minus className="h-8 w-8" />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>Add Expense</DialogTitle>
-            <TransactionForm 
-              type="expense"
-              onSave={() => setExpenseDialogOpen(false)}
-              onCancel={() => setExpenseDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-      </div>
+{/* Add Transaction Buttons */}
+<div className="fixed right-6 bottom-24 flex flex-col gap-4 z-50">
+  <Dialog open={incomeDialogOpen} onOpenChange={setIncomeDialogOpen}>
+    <DialogTrigger asChild>
+      <Button className="add-income-button rounded-full h-16 w-16 p-0 flex items-center justify-center">
+        <Plus className="h-8 w-8" />
+      </Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogTitle>Add Income</DialogTitle>
+      <TransactionForm 
+        type="income"
+        onSave={() => setIncomeDialogOpen(false)}
+        onCancel={() => setIncomeDialogOpen(false)}
+      />
+    </DialogContent>
+  </Dialog>
+  <Dialog open={expenseDialogOpen} onOpenChange={setExpenseDialogOpen}>
+    <DialogTrigger asChild>
+      <Button className="add-expense-button rounded-full h-16 w-16 p-0 flex items-center justify-center">
+        <Minus className="h-8 w-8" />
+      </Button>
+    </DialogTrigger>
+    <DialogContent>
+      <DialogTitle>Add Expense</DialogTitle>
+      <TransactionForm 
+        type="expense"
+        onSave={() => setExpenseDialogOpen(false)}
+        onCancel={() => setExpenseDialogOpen(false)}
+      />
+    </DialogContent>
+  </Dialog>
+</div>
     </Layout>
   );
 };
