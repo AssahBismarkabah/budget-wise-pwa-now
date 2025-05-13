@@ -159,7 +159,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path="/categories"
+                    path="/categories/:type"
                     element={
                       <Layout>
                         <Categories />

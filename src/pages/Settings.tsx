@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import Layout from '@/components/Layout';
 import { useBudget } from '@/contexts/BudgetContext';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -139,7 +138,7 @@ const Settings = () => {
   };
   
   return (
-    <Layout>
+    <>
       {loading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <Spinner size={48} />
@@ -147,6 +146,18 @@ const Settings = () => {
       )}
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6">{t('settings')}</h1>
+        
+        {/* Account Section */}
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
+          <h2 className="text-lg font-medium mb-4">{t('account')}</h2>
+          <Button
+            variant="destructive"
+            onClick={handleLogout}
+            className="w-full"
+          >
+            {t('logout')}
+          </Button>
+        </div>
         
         {/* Data Management Section */}
         <div className="mb-8">
@@ -405,20 +416,8 @@ const Settings = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        
-        {/* Add this section */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-medium">{t('account')}</h2>
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            className="w-full"
-          >
-            {t('logout')}
-          </Button>
-        </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

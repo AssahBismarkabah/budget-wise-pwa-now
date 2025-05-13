@@ -188,157 +188,155 @@ const Statistics = () => {
   const savingsRate = totalIncome > 0 ? (totalBalance / totalIncome) * 100 : 0;
   
   return (
-    <Layout>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">{t('statistics')}</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">{t('statistics')}</h1>
+      
+      {/* Period Selector */}
+      <div className="flex gap-4 mb-6 items-center">
+        <div>
+          <select
+            value={period}
+            onChange={(e) => setPeriod(e.target.value as 'daily' | 'monthly' | 'yearly')}
+            className="border rounded p-2"
+          >
+            <option value="daily">{t('daily')}</option>
+            <option value="monthly">{t('monthly')}</option>
+            <option value="yearly">{t('yearly')}</option>
+          </select>
+        </div>
         
-        {/* Period Selector */}
-        <div className="flex gap-4 mb-6 items-center">
+        <div>
+          <select
+            value={year}
+            onChange={(e) => setYear(Number(e.target.value))}
+            className="border rounded p-2"
+          >
+            {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 4 + i).map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+        </div>
+        
+        {period !== 'yearly' && (
           <div>
             <select
-              value={period}
-              onChange={(e) => setPeriod(e.target.value as 'daily' | 'monthly' | 'yearly')}
+              value={month}
+              onChange={(e) => setMonth(Number(e.target.value))}
               className="border rounded p-2"
             >
-              <option value="daily">{t('daily')}</option>
-              <option value="monthly">{t('monthly')}</option>
-              <option value="yearly">{t('yearly')}</option>
-            </select>
-          </div>
-          
-          <div>
-            <select
-              value={year}
-              onChange={(e) => setYear(Number(e.target.value))}
-              className="border rounded p-2"
-            >
-              {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - 4 + i).map((y) => (
-                <option key={y} value={y}>{y}</option>
+              {Array.from({ length: 12 }, (_, i) => i).map((m) => (
+                <option key={m} value={m}>{getMonthName(m, t)}</option>
               ))}
             </select>
           </div>
-          
-          {period !== 'yearly' && (
-            <div>
-              <select
-                value={month}
-                onChange={(e) => setMonth(Number(e.target.value))}
-                className="border rounded p-2"
-              >
-                {Array.from({ length: 12 }, (_, i) => i).map((m) => (
-                  <option key={m} value={m}>{getMonthName(m, t)}</option>
-                ))}
-              </select>
-            </div>
-          )}
-          
-          {period === 'daily' && (
-            <div>
-              <select
-                value={day}
-                onChange={(e) => setDay(Number(e.target.value))}
-                className="border rounded p-2"
-              >
-                {Array.from(
-                  { length: new Date(year, month + 1, 0).getDate() }, 
-                  (_, i) => i + 1
-                ).map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-          )}
+        )}
+        
+        {period === 'daily' && (
+          <div>
+            <select
+              value={day}
+              onChange={(e) => setDay(Number(e.target.value))}
+              className="border rounded p-2"
+            >
+              {Array.from(
+                { length: new Date(year, month + 1, 0).getDate() }, 
+                (_, i) => i + 1
+              ).map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+      
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+          <h3 className="text-sm text-muted-foreground mb-1">{t('income_categories')}</h3>
+          <p className="text-xl font-medium text-budget-green">{formatCurrency(totalIncome)}</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Ø {formatCurrency(avgIncome)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
+          </p>
         </div>
         
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">{t('income_categories')}</h3>
-            <p className="text-xl font-medium text-budget-green">{formatCurrency(totalIncome)}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Ø {formatCurrency(avgIncome)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
-            </p>
-          </div>
-          
-          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">{t('expense_categories')}</h3>
-            <p className="text-xl font-medium text-budget-red">{formatCurrency(totalExpense)}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Ø {formatCurrency(avgExpense)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
-            </p>
-          </div>
-          
-          <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
-            <h3 className="text-sm text-muted-foreground mb-1">{t('balance')}</h3>
-            <p className={`text-xl font-medium ${totalBalance >= 0 ? 'text-budget-green' : 'text-budget-red'}`}>
-              {formatCurrency(totalBalance)}
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Sparrate: {savingsRate.toFixed(1)}%
-            </p>
-          </div>
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+          <h3 className="text-sm text-muted-foreground mb-1">{t('expense_categories')}</h3>
+          <p className="text-xl font-medium text-budget-red">{formatCurrency(totalExpense)}</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Ø {formatCurrency(avgExpense)} / {period === 'monthly' ? 'Monat' : 'Jahr'}
+          </p>
         </div>
         
-        {/* Bar Chart */}
-        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
-          <h3 className="text-lg font-medium mb-4">
-            {period === 'monthly' ? `${t('monthly_overview')} ${year}` : period === 'daily' ? `${t('daily_overview')} ${year}-${month}-${day}` : t('yearly_overview')}
-          </h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                <Legend />
-                <Bar dataKey="income" name={t('income_categories')} fill={COLORS.income} />
-                <Bar dataKey="expense" name={t('expense_categories')} fill={COLORS.expense} />
-                <Bar dataKey="balance" name={t('balance')} fill={COLORS.balance} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        
-        {/* Pie Chart for Category Distribution */}
-        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
-          <h3 className="text-lg font-medium mb-4">
-            {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month, t)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
-          </h3>
-          <div className="h-64">
-            {categoryData.length > 0 ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={(entry) => `${entry.name}: ${formatCurrency(entry.value)}`}
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            ) : (
-              <div className="h-full flex items-center justify-center">
-                <p className="text-muted-foreground">{t('no_data_available')}</p>
-              </div>
-            )}
-          </div>
+        <div className="bg-card text-card-foreground rounded-lg shadow-md p-4">
+          <h3 className="text-sm text-muted-foreground mb-1">{t('balance')}</h3>
+          <p className={`text-xl font-medium ${totalBalance >= 0 ? 'text-budget-green' : 'text-budget-red'}`}>
+            {formatCurrency(totalBalance)}
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Sparrate: {savingsRate.toFixed(1)}%
+          </p>
         </div>
       </div>
-    </Layout>
+      
+      {/* Bar Chart */}
+      <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
+        <h3 className="text-lg font-medium mb-4">
+          {period === 'monthly' ? `${t('monthly_overview')} ${year}` : period === 'daily' ? `${t('daily_overview')} ${year}-${month}-${day}` : t('yearly_overview')}
+        </h3>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+              <Legend />
+              <Bar dataKey="income" name={t('income_categories')} fill={COLORS.income} />
+              <Bar dataKey="expense" name={t('expense_categories')} fill={COLORS.expense} />
+              <Bar dataKey="balance" name={t('balance')} fill={COLORS.balance} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+      
+      {/* Pie Chart for Category Distribution */}
+      <div className="bg-card text-card-foreground rounded-lg shadow-md p-4 mb-6">
+        <h3 className="text-lg font-medium mb-4">
+          {t('expense_distribution')} {period === 'monthly' ? `(${getMonthName(month, t)} ${year})` : period === 'daily' ? `${year}-${month}-${day}` : `(${year})`}
+        </h3>
+        <div className="h-64">
+          {categoryData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={categoryData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={(entry) => `${entry.name}: ${formatCurrency(entry.value)}`}
+                >
+                  {categoryData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <p className="text-muted-foreground">{t('no_data_available')}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
