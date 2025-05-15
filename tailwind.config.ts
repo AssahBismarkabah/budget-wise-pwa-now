@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -68,9 +67,15 @@ export default {
 					green: '#34C759',
 					red: '#FF3B30',
 					yellow: '#FFCC00',
+					purple: '#B18AFF',
 					gray: {
 						light: '#F5F5F5',
-						dark: '#333333'
+						dark: '#23272F',
+						border: '#E5E7EB',
+						card: '#F8F9FB',
+						cardDark: '#23272F',
+						text: '#222B45',
+						textDark: '#F4F4F4',
 					}
 				}
 			},
@@ -123,6 +128,11 @@ export default {
 			},
 			fontFamily: {
 				roboto: ['Roboto', 'sans-serif']
+			},
+			fontWeight: {
+				normal: '400',
+				medium: '500',
+				bold: '700',
 			}
 		}
 	},
