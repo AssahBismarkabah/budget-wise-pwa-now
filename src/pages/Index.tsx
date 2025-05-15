@@ -77,128 +77,138 @@ const Index = () => {
 
   return (
     <Layout>
-      {/* Balance Card */}
-      <div className="bg-black absolute left-0 w-full p-4">
-{/* Balance and Week header now outside the card */}
-<div className="flex items-center justify-between mb-2 p-1">
-  <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">BALANCE</span>
-  <div className="flex items-center gap-2">
-    <CalendarDays className="h-4 w-4 text-muted-foreground" />
-    <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">WEEK {week}</span>
-  </div>
-</div>
-
-{/* Card now starts without the header */}
-<div className="bg-card text-card-foreground rounded-2xl shadow-lg p-4 mb-4">
-  <div className="flex items-center gap-4">
-    {/* Doughnut Chart */}
-    <div className="flex-shrink-0 flex flex-col items-center justify-center" style={{ width: 90, height: 90 }}>
-      <ResponsiveContainer width={90} height={90}>
-        <PieChart>
-          <Pie
-            data={pieData}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            innerRadius={30}
-            outerRadius={45}
-            paddingAngle={2}
-            startAngle={90}
-            endAngle={-270}
-          >
-            {pieData.map((entry, i) => (
-              <Cell key={`cell-${i}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-    </div>
-    {/* Balance and Keys */}
-    <div className="flex-1 flex flex-col items-center">
-      <span className="text-4xl font-bold tracking-tight mb-1" style={{ letterSpacing: '-0.03em' }}>{formatCurrency(balance)}</span>
-      <div className="flex gap-2 mt-2">
-        {pieData.map((cat, i) => (
-          <span key={cat.name} className="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full" style={{ background: cat.color + '22', color: cat.color }}>{cat.name}</span>
-        ))}
-      </div>
-    </div>
-  </div>
-</div>
-        {/* Income/Expense Cards */}
-         {/* Income/Expense Cards in horizontal layout */}
-<div className="flex gap-4 mb-4 w-full">
-  {/* Income Card */}
-  <div className="flex-1 bg-card text-card-foreground rounded-2xl shadow-lg p-4 ">
-    <div className="text-xs text-gray-500 font-medium uppercase mb-1">{t('income_categories')}</div>
-    <div className="text-2xl font-bold text-green-500">{formatCurrency(totalIncome)}</div>
-  </div>
-  
-  {/* Expense Card */}
-  <div className="flex-1 bg-card text-card-foreground rounded-2xl shadow-lg p-4 ">
-    <div className="text-xs text-gray-500 font-medium uppercase mb-1">{t('expense_categories')}</div>
-    <div className="text-2xl font-bold text-red-500">−{formatCurrency(Math.abs(totalExpense))}</div>
-  </div>
-</div>
-      </div>
-
-      {/* Transaction List */}
-      <div className="p-4">
-        <div className="bg-card text-card-foreground rounded-2xl shadow-lg p-4">
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <h3 className="text-lg font-bold tracking-tight">{t('transactions')}</h3>
+      <div className="flex flex-col w-full h-full">
+        {/* Balance Section with Black Background */}
+        <div className="w-full bg-black p-4 pb-8">
+          {/* Balance and Week header */}
+          <div className="flex items-center justify-between mb-2 p-1">
+            <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">BALANCE</span>
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xs font-bold tracking-widest text-muted-foreground uppercase">WEEK {week}</span>
+            </div>
           </div>
-          {sortedTransactions.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-muted-foreground font-medium">{t('no_transactions')}</p>
-              <p className="text-sm mt-2">{t('add_first_transaction')}</p>
+  
+          {/* Balance Card */}
+          <div className="bg-card text-card-foreground rounded-2xl shadow-lg p-4 mb-4">
+            <div className="flex items-center gap-4">
+              {/* Doughnut Chart */}
+              <div className="flex-shrink-0 flex flex-col items-center justify-center" style={{ width: 90, height: 90 }}>
+                <ResponsiveContainer width={90} height={90}>
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={30}
+                      outerRadius={45}
+                      paddingAngle={2}
+                      startAngle={90}
+                      endAngle={-270}
+                    >
+                      {pieData.map((entry, i) => (
+                        <Cell key={`cell-${i}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Balance and Keys */}
+              <div className="flex-1 flex flex-col items-center">
+                <span className="text-4xl font-bold tracking-tight mb-1" style={{ letterSpacing: '-0.03em' }}>{formatCurrency(balance)}</span>
+                <div className="flex gap-2 mt-2">
+                  {pieData.map((cat, i) => (
+                    <span 
+                      key={cat.name} 
+                      className="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full" 
+                      style={{ background: cat.color + '22', color: cat.color }}
+                    >
+                      {cat.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-          ) : (
-            <div className="divide-y divide-border">
-              {sortedTransactions.map((transaction) => (
-                <TransactionItem 
-                  key={transaction.id}
-                  transaction={transaction}
-                />
-              ))}
+          </div>
+  
+          {/* Income/Expense Cards in horizontal layout */}
+          <div className="flex gap-4 w-full">
+            {/* Income Card */}
+            <div className="flex-1 bg-card text-card-foreground rounded-2xl shadow-lg p-4">
+              <div className="text-xs text-gray-500 font-medium uppercase mb-1">{t('income_categories')}</div>
+              <div className="text-2xl font-bold text-green-500">{formatCurrency(totalIncome)}</div>
             </div>
-          )}
+            
+            {/* Expense Card */}
+            <div className="flex-1 bg-card text-card-foreground rounded-2xl shadow-lg p-4">
+              <div className="text-xs text-gray-500 font-medium uppercase mb-1">{t('expense_categories')}</div>
+              <div className="text-2xl font-bold text-red-500">−{formatCurrency(Math.abs(totalExpense))}</div>
+            </div>
+          </div>
+        </div>
+  
+        {/* Transaction Section - separate div with white background and curved top */}
+        <div 
+          className="w-full bg-white rounded-t-3xl flex-1 -mt-6 relative z-10"
+        >
+          <div className="px-4 pt-6 pb-20">
+            <div className="text-xl font-bold mb-4 px-2">{t('transactions')}</div>
+            <div className="bg-card text-card-foreground shadow-sm">
+              {sortedTransactions.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-muted-foreground font-medium">{t('no_transactions')}</p>
+                  <p className="text-sm mt-2">{t('add_first_transaction')}</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {sortedTransactions.map((transaction) => (
+                    <TransactionItem 
+                      key={transaction.id}
+                      transaction={transaction}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-
-{/* Add Transaction Buttons */}
-<div className="fixed right-6 bottom-24 flex flex-col gap-4 z-50">
-  <Dialog open={incomeDialogOpen} onOpenChange={setIncomeDialogOpen}>
-    <DialogTrigger asChild>
-      <Button className="add-income-button rounded-full h-16 w-16 p-0 flex items-center justify-center">
-        <Plus className="h-8 w-8" />
-      </Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogTitle>Add Income</DialogTitle>
-      <TransactionForm 
-        type="income"
-        onSave={() => setIncomeDialogOpen(false)}
-        onCancel={() => setIncomeDialogOpen(false)}
-      />
-    </DialogContent>
-  </Dialog>
-  <Dialog open={expenseDialogOpen} onOpenChange={setExpenseDialogOpen}>
-    <DialogTrigger asChild>
-      <Button className="add-expense-button rounded-full h-16 w-16 p-0 flex items-center justify-center">
-        <Minus className="h-8 w-8" />
-      </Button>
-    </DialogTrigger>
-    <DialogContent>
-      <DialogTitle>Add Expense</DialogTitle>
-      <TransactionForm 
-        type="expense"
-        onSave={() => setExpenseDialogOpen(false)}
-        onCancel={() => setExpenseDialogOpen(false)}
-      />
-    </DialogContent>
-  </Dialog>
-</div>
+  
+      {/* Add Transaction Buttons - Fixed position */}
+      <div className="fixed right-6 bottom-24 flex flex-col gap-4 z-50">
+        <Dialog open={incomeDialogOpen} onOpenChange={setIncomeDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700 rounded-full h-16 w-16 p-0 flex items-center justify-center">
+              <Plus className="h-8 w-8" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Add Income</DialogTitle>
+            <TransactionForm 
+              type="income"
+              onSave={() => setIncomeDialogOpen(false)}
+              onCancel={() => setIncomeDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+        <Dialog open={expenseDialogOpen} onOpenChange={setExpenseDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700 rounded-full h-16 w-16 p-0 flex items-center justify-center">
+              <Minus className="h-8 w-8" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Add Expense</DialogTitle>
+            <TransactionForm 
+              type="expense"
+              onSave={() => setExpenseDialogOpen(false)}
+              onCancel={() => setExpenseDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
     </Layout>
   );
 };

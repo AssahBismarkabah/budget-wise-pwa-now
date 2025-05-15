@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect } from 'react';
+import { useState, ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import FeedbackForm from './FeedbackForm';
 import Spinner from './ui/Spinner';
 import ProfileDialog from './ProfileDialog';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface LayoutProps {
   children: ReactNode;
@@ -30,38 +31,15 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
   const { currentAccount, accounts, switchAccount, isLoading } = useBudget();
   const { t, i18n } = useTranslation();
   const language = i18n.language;
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
-  
-  // Apply dark mode class to html element
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
+  const { theme, setTheme } = useTheme();
 
-  // Initialize dark mode from localStorage if available
-  useEffect(() => {
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode) {
-      setIsDarkMode(JSON.parse(savedDarkMode));
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setIsDarkMode(true);
-    }
-  }, []);
-
-  // Toggle dark mode and save to localStorage
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
-  };
+  const isDarkMode = theme === 'dark';
+  const toggleDarkMode = () => setTheme(isDarkMode ? 'light' : 'dark');
   
   if (isLoading) {
     return (
@@ -96,7 +74,12 @@ const Layout = ({ children }: LayoutProps) => {
                 variant="ghost"
                 size="icon"
                 onClick={toggleDarkMode}
-                className="text-primary-foreground dark:text-white hover:bg-accent dark:hover:bg-gray-700"
+                className={cn(
+                  "rounded-full p-0 w-10 h-10 flex items-center justify-center shadow-md transition-colors",
+                  isDarkMode
+                    ? "bg-gray-800 text-white hover:bg-gray-700"
+                    : "bg-white text-primary hover:bg-gray-100"
+                )}
                 title={isDarkMode ? t('light_mode') : t('dark_mode')}
               >
                 {isDarkMode ? (
@@ -204,7 +187,7 @@ const Layout = ({ children }: LayoutProps) => {
             to="/" 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
-              location.pathname === '/' && "bg-accent font-medium text-primary"
+              location.pathname === '/' && "bg-gray-100 dark:bg-gray-800 font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -216,7 +199,7 @@ const Layout = ({ children }: LayoutProps) => {
             to="/limits" 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
-              location.pathname === '/limits' && "bg-accent font-medium text-primary"
+              location.pathname === '/limits' && "bg-gray-100 dark:bg-gray-800 font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -228,7 +211,7 @@ const Layout = ({ children }: LayoutProps) => {
             to="/savings-goals" 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
-              location.pathname === '/savings-goals' && "bg-accent font-medium text-primary"
+              location.pathname === '/savings-goals' && "bg-gray-100 dark:bg-gray-800 font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
@@ -240,7 +223,7 @@ const Layout = ({ children }: LayoutProps) => {
             to="/statistics" 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md hover:bg-accent transition-colors",
-              location.pathname === '/statistics' && "bg-accent font-medium text-primary"
+              location.pathname === '/statistics' && "bg-gray-100 dark:bg-gray-800 font-medium text-primary"
             )}
             onClick={() => setSidebarOpen(false)}
           >
